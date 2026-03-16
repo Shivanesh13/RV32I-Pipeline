@@ -1,0 +1,7 @@
+BEGIN 1:top:fast:work
+    de_rs2 :  1:tb_top:fast:work
+    de_pc_o :  1:tb_top:fast:work
+    de_rs1 :  1:tb_top:fast:work
+    ex_alu_result :  1:tb_top:fast:work
+    ex_opcode :  1:tb_top:fast:work
+END 

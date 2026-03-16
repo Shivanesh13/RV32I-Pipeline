@@ -1,0 +1,58 @@
+/mnt/ncsudrive/s/sgunase2/RISCV_cpu/src/memory.sv {1 {vlog -work work -vopt -sv -stats=none /mnt/ncsudrive/s/sgunase2/RISCV_cpu/src/memory.sv
+QuestaSim-64 vlog 2025.1_1 Compiler 2025.02 Feb 13 2025
+-- Compiling package defines
+-- Compiling package memory_sv_unit
+-- Importing package defines
+-- Compiling module memory
+
+Top level modules:
+	memory
+
+} {} {}} /mnt/ncsudrive/s/sgunase2/RISCV_cpu/src/defines.svh {1 {vlog -work work -vopt -sv -stats=none /mnt/ncsudrive/s/sgunase2/RISCV_cpu/src/defines.svh
+QuestaSim-64 vlog 2025.1_1 Compiler 2025.02 Feb 13 2025
+-- Compiling package defines
+
+Top level modules:
+	--none--
+
+} {} {}} /mnt/ncsudrive/s/sgunase2/RISCV_cpu/src/write_back.sv {1 {vlog -work work -vopt -sv -stats=none /mnt/ncsudrive/s/sgunase2/RISCV_cpu/src/write_back.sv
+QuestaSim-64 vlog 2025.1_1 Compiler 2025.02 Feb 13 2025
+-- Compiling package defines
+-- Compiling package write_back_sv_unit
+-- Importing package defines
+-- Compiling module write_back
+
+Top level modules:
+	write_back
+
+} {} {}} /mnt/ncsudrive/s/sgunase2/RISCV_cpu/src/execute.sv {1 {vlog -work work -vopt -sv -stats=none /mnt/ncsudrive/s/sgunase2/RISCV_cpu/src/execute.sv
+QuestaSim-64 vlog 2025.1_1 Compiler 2025.02 Feb 13 2025
+-- Compiling package defines
+-- Compiling package execute_sv_unit
+-- Importing package defines
+-- Compiling module execute
+
+Top level modules:
+	execute
+
+} {} {}} /mnt/ncsudrive/s/sgunase2/RISCV_cpu/src/top.sv {1 {vlog -work work -vopt -sv -stats=none /mnt/ncsudrive/s/sgunase2/RISCV_cpu/src/top.sv
+QuestaSim-64 vlog 2025.1_1 Compiler 2025.02 Feb 13 2025
+-- Compiling package defines
+-- Compiling package top_sv_unit
+-- Importing package defines
+-- Compiling module top
+
+Top level modules:
+	top
+
+} {} {}} /mnt/ncsudrive/s/sgunase2/RISCV_cpu/src/tb_top.sv {1 {vlog -work work -vopt -sv -stats=none /mnt/ncsudrive/s/sgunase2/RISCV_cpu/src/tb_top.sv
+QuestaSim-64 vlog 2025.1_1 Compiler 2025.02 Feb 13 2025
+-- Compiling package defines
+-- Compiling package tb_top_sv_unit
+-- Importing package defines
+-- Compiling module tb_top
+
+Top level modules:
+	tb_top
+
+} {} {}}
