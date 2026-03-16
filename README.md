@@ -2,7 +2,7 @@
 
 A 32-bit RISC-V (RV32I) processor core written in SystemVerilog, featuring a classic 5-stage in-order pipeline. This project focuses heavily on cycle-accurate hazard resolution, implementing full data forwarding and pipeline stalling to maximize Instructions Per Cycle (IPC).
 
-The core architecture is modeled after the textbook design principles found in Hennessy and Patterson's *Computer Architecture: A Quantitative Approach*, utilizing a 0-cycle latency combinational memory interface to cleanly isolate core pipeline mechanics from complex bus protocols.
+
 
 ## 🏗️ Architecture Overview
 
