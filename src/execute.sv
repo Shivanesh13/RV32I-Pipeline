@@ -48,7 +48,8 @@ module execute(
 
     output logic [REG_WIDTH-1:0]        reg_loopback_o,
     output logic [DATA_WIDTH-1:0]       data_loopback_o,
-    output logic                         load_op_o
+    output logic                         load_op_o,
+    input logic                          squash_execute_i
 );
 
     // ==========================================
@@ -79,7 +80,7 @@ module execute(
         jal_taken_o         = 1'b0;
         jal_target_o        = 32'h0;
 
-        if (decode_valid_i) begin
+        if (decode_valid_i && !squash_execute_i) begin
             case (opcode_i)
                 R_OPCODE: begin
                     is_reg_write = 1'b1;
@@ -141,7 +142,7 @@ module execute(
             mem_write_o     <= 1'b0;
             execute_valid_o <= 1'b0;
         end else begin
-            if (decode_valid_i && !stall_i && mem_ready_i) begin
+            if (decode_valid_i && !stall_i && mem_ready_i && !squash_execute_i) begin
                 // Lock in the ALU and AGU calculations
                 alu_result_o    <= alu_math_result;
                 mem_addr_o      <= calculated_mem_addr;
@@ -158,7 +159,7 @@ module execute(
                 mem_write_o     <= is_mem_write;
                 execute_valid_o <= 1'b1;
             end 
-            else if (!stall_i) begin
+            else if (!stall_i || squash_execute_i) begin
                 // Pipeline Bubble
                 alu_result_o    <= 32'h0;
                 mem_addr_o      <= 32'h0;

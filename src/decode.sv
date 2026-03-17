@@ -39,7 +39,8 @@ module decode(
 
 
     input logic [REG_WIDTH-1:0] reg_mem_loopback_i,
-    input logic [DATA_WIDTH-1:0] data_mem_loopback_i
+    input logic [DATA_WIDTH-1:0] data_mem_loopback_i,
+    input logic squash_decode_i
 );
 
 logic [DATA_WIDTH-1:0] pc_reg;
@@ -55,6 +56,7 @@ logic [REG_WIDTH-1:0] ex_rd, reg_data_0, reg_data_1;
 always_ff @(posedge clk or negedge resetn) begin : blockName
     if(!resetn) begin
         //MEM_DATA <= '{default: 32'h00000000};
+        // did for initial testing purposes 
         MEM_DATA[1] <= 32'h00000020;
         MEM_DATA[2] <= 32'h00000014;;
         MEM_DATA[3] <= 32'd5;
@@ -141,7 +143,16 @@ always_ff @(posedge clk or negedge resetn) begin
         //decode_ready_o <= 1'b0;
         decode_valid_o <= 1'b0;
     end else begin
-        if(inst_valid_i && decode_ready_o) begin
+        if(squash_decode_i) begin
+            decode_valid_o <= 1'b0;
+            pc_valid_o <= 1'b0;
+            pc_o <= 32'h00000000;
+            opcode_o <= 6'b000000;
+            funct_o <= 6'b000000;
+            rs1_o <= 32'h00000000;
+            rs2_o <= 32'h00000000;
+        end
+        else if(inst_valid_i && decode_ready_o) begin
             pc_valid_o <= 1'b1;
             pc_o <= pc_i;
             case(inst_i[31:26])

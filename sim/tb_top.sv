@@ -1,5 +1,5 @@
 `timescale 1ns/1ps
-`include "defines.svh"
+`include "../src/defines.svh"
 import defines::*;
 
 module tb_top;

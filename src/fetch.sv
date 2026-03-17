@@ -23,7 +23,9 @@ module fetch(
     input  logic        exception_i,
     input  logic [31:0] exception_addr_i,
     input  logic        branch_i,         // Added: Branch taken signal
-    input  logic [31:0] branch_addr_i     // Added: Branch target address
+    input  logic [31:0] branch_addr_i,     // Added: Branch target address
+    input  logic        jal_i,
+    input  logic [31:0] jal_addr_i
 );
 
     logic [31:0] pc_reg, pc_next, pc_reg_d;
@@ -38,23 +40,29 @@ module fetch(
     always_comb begin
         pc_next = pc_reg;
         instruction_read = 1'b0;
+        if(branch_i) begin
+            pc_next = branch_addr_i;
+        end
+        else if(jal_i) begin
+            pc_next = jal_addr_i;
+        end
         if(id_ready_i && i_mem_ready && !stall_i) begin
             pc_next = pc_reg + 4;
             instruction_read = 1'b1;
         end
     end 
 
-logic [31:0] pc_next_d;
+logic [31:0] pc_prev;
     always_ff @(posedge clk, negedge resetn) begin
         if(!resetn) begin
             pc_reg <= 'b0;
         end else begin
             if(i_mem_ready && id_ready_i && !stall_i) begin
                 pc_reg <= pc_next;
-                pc_next_d <= pc_reg;
+                pc_prev <= pc_reg;
             end
             else 
-                pc_reg <= pc_next_d;
+                pc_reg <= pc_prev; 
         end
     end
 
@@ -64,7 +72,7 @@ logic [31:0] pc_next_d;
             inst_o       <= 32'h0;
             inst_valid_o <= 1'b0;
         end 
-        else if (!stall_i) begin // If stalled, do NOTHING. Just hold old values.
+        else if (!stall_i && id_ready_i) begin // If stalled, do NOTHING. Just hold old values.
             if (i_mem_valid) begin
                 pc_o         <= pc_reg;
                 inst_o       <= i_mem_data;

@@ -1,453 +1,437 @@
 m255
 K4
 z2
-Z0 !s12c _opt
-Z1 !s99 nomlopt
-R0
-R1
-R0
-R1
-R0
-R1
-R0
-R1
-R0
-R1
-R0
-R1
-R0
-R1
-R0
-R1
-R0
-R1
-R0
-R1
-Z2 !s12c _opt1
-R1
-R0
-R1
-R0
-R1
-R0
-R1
-R0
-R1
-R0
-R1
-R2
-R1
-R0
-R1
-R0
-R1
-R0
-R1
-!s11f vlog 2025.1_1 2025.02, Feb 13 2025
+!s11f MIXED_VERSIONS
 13
 !s112 1.1
 !i10d 8192
 !i10e 25
 !i10f 100
 cModel Technology
-Z3 d/mnt/ncsudrive/s/sgunase2/RISCV_cpu/sim
-T_opt
-!s110 1773450280
-VLjDj@gkGf=zEc7P8_j:AR0
-04 6 4 work tb_top fast 0
-=1-043201bca271-69b4b426-3194a-1e87f6
-R1
-!s12f OEM100
-!s12b OEM100
-!s124 OEM100
-!s135 nogc
-o-quiet -auto_acc_if_foreign -work work +acc
-Z4 tCvgOpt 0
-n@_opt
-OL;O;2025.1_1;82
+Z0 d/mnt/ncsudrive/s/sgunase2/RISCV_cpu/sim
+vcontrol_unit
+Z1 2../src/control_unit.sv|../src/decode.sv|../src/execute.sv|../src/fetch.sv|../src/memory.sv|../src/top.sv|../src/write_back.sv|../sim/tb_top.sv
+Z2 DXx6 sv_std 3 std 0 22 @5XbY]_OacJl=`ToSm<M^0
+Z3 !s110 1773760970
+!i10b 1
+!s100 1c6lYeSDz5:zS4oS16cI72
+IML`o<8hBa>M;ea1_aOYZ;1
+S1
+R0
+w1773760408
+8../src/control_unit.sv
+F../src/control_unit.sv
+!i122 2
+L0 1 50
+Z4 VDg1SIo80bB@j0V0VzS_@n1
+Z5 OL;L;2025.1_1;82
+r1
+!s85 0
+31
+Z6 !s108 1773760969.000000
+!s107 ../src/defines.svh|../sim/tb_top.sv|../src/write_back.sv|../src/top.sv|../src/memory.sv|../src/fetch.sv|../src/execute.sv|../src/decode.sv|../src/control_unit.sv|
+Z7 !s90 -sv|+incdir+src|../src/control_unit.sv|../src/decode.sv|../src/execute.sv|../src/fetch.sv|../src/memory.sv|../src/top.sv|../src/write_back.sv|../sim/tb_top.sv|
+!i113 0
+Z8 o-sv -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
+Z9 !s92 -sv +incdir+src -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
+Z10 tCvgOpt 0
 vdecode
-Z5 2/mnt/ncsudrive/s/sgunase2/RISCV_cpu/src/decode.sv
-Z6 DXx6 sv_std 3 std 0 22 @5XbY]_OacJl=`ToSm<M^0
-Z7 DXx4 work 7 defines 0 22 K2MALF[h2:`M657h:9m8A2
-DXx4 work 14 decode_sv_unit 0 22 I[7Ej4hM@dfI[e4L];Qz]2
-Z8 !s110 1773450231
-Z9 VDg1SIo80bB@j0V0VzS_@n1
+R1
+R2
+Z11 DXx4 work 7 defines 0 22 9RLAKZ^e^_Do?LEY6B2J12
+DXx4 work 14 decode_sv_unit 0 22 j?V`;_o3@R;oK=E1ABiT02
+R3
+R4
 r1
 !s85 0
 !i10b 1
-!s100 GH@o?6f47]FU4n=aY1Q`N3
-IQU^DKaXLV=D@9Q9liA`mI3
+!s100 GfK]ZjVH29Abo@VngDkf72
+IAV8[?@_O=11_zi7d;@S3j0
 !s105 decode_sv_unit
 S1
-R3
-Z10 w1773450167
-Z11 8/mnt/ncsudrive/s/sgunase2/RISCV_cpu/src/decode.sv
-Z12 F/mnt/ncsudrive/s/sgunase2/RISCV_cpu/src/decode.sv
-!i122 210
-L0 3 200
-Z13 OL;L;2025.1_1;82
-31
-Z14 !s108 1773450231.000000
-Z15 !s107 /mnt/ncsudrive/s/sgunase2/RISCV_cpu/src/defines.svh|/mnt/ncsudrive/s/sgunase2/RISCV_cpu/src/decode.sv|
-Z16 !s90 -reportprogress|300|-work|work|-vopt|-sv|-stats=none|/mnt/ncsudrive/s/sgunase2/RISCV_cpu/src/decode.sv|
-!i113 0
-Z17 o-work work -sv -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
-R4
-Xdecode_sv_unit
+R0
+Z12 w1773758316
+Z13 8../src/decode.sv
+Z14 F../src/decode.sv
+!i122 2
+L0 3 211
 R5
+31
 R6
+Z15 !s107 ../src/defines.svh|../sim/tb_top.sv|../src/write_back.sv|../src/top.sv|../src/memory.sv|../src/fetch.sv|../src/execute.sv|../src/decode.sv|../src/control_unit.sv|
 R7
+!i113 0
 R8
-VI[7Ej4hM@dfI[e4L];Qz]2
+R9
+R10
+Xdecode_sv_unit
+R1
+R2
+R11
+R3
+Vj?V`;_o3@R;oK=E1ABiT02
 r1
 !s85 0
 !i10b 1
-!s100 B?zKCFS82e9Id>fb]Sh__1
-II[7Ej4hM@dfI[e4L];Qz]2
+!s100 8A;=^e4hGA`Lhi4mO7gh?0
+Ij?V`;_o3@R;oK=E1ABiT02
 !i103 1
 S1
-R3
-R10
-R11
+R0
 R12
-Z18 F/mnt/ncsudrive/s/sgunase2/RISCV_cpu/src/defines.svh
-!i122 210
-Z19 L0 2 0
 R13
-31
 R14
-R15
-R16
-!i113 0
-R17
-R4
-Xdefines
-Z20 2/mnt/ncsudrive/s/sgunase2/RISCV_cpu/src/write_back.sv
+Z16 F../src/defines.svh
+!i122 2
+Z17 L0 2 0
+R5
+31
 R6
-Z21 !s110 1773450236
-!i10b 1
-!s100 HPjhja7dmOJJo9]i@^HWm1
-IK2MALF[h2:`M657h:9m8A2
-S1
+R15
+R7
+!i113 0
+R8
+R9
+R10
+Xdefines
+R1
+R2
 R3
-w1773273493
-8/mnt/ncsudrive/s/sgunase2/RISCV_cpu/src/defines.svh
-R18
-!i122 217
+!i10b 1
+!s100 9RIMX7nVa`n`W]PQl^N:U0
+Iz>in[o]Fz61iCEZfG[eV22
+S1
+R0
+Z18 w1773760965
+R16
+Z19 F../sim/tb_top.sv
+!i122 2
 L0 1 0
-VK2MALF[h2:`M657h:9m8A2
-R13
+Vz>in[o]Fz61iCEZfG[eV22
+R5
 r1
 !s85 0
 31
-Z22 !s108 1773450235.000000
-Z23 !s107 /mnt/ncsudrive/s/sgunase2/RISCV_cpu/src/defines.svh|/mnt/ncsudrive/s/sgunase2/RISCV_cpu/src/write_back.sv|
-Z24 !s90 -reportprogress|300|-work|work|-vopt|-sv|-stats=none|/mnt/ncsudrive/s/sgunase2/RISCV_cpu/src/write_back.sv|
-!i113 0
-R17
-R4
-vexecute
-Z25 2/mnt/ncsudrive/s/sgunase2/RISCV_cpu/src/execute.sv
 R6
+R15
 R7
-DXx4 work 15 execute_sv_unit 0 22 PCj@Emj[lS1Y;6]FY@T:N1
-Z26 !s110 1773450233
+!i113 0
+R8
 R9
+R10
+vexecute
+R1
+R2
+R11
+DXx4 work 15 execute_sv_unit 0 22 :5L=F2fHm[7oAokiHIEVA1
+R3
+R4
 r1
 !s85 0
 !i10b 1
-!s100 YMKIUiDgiIVAGML222@c:1
-I3<iVaLAP=XECiH=mKdLOk2
+!s100 @8TSH^cDMFgHMfReBTQ:`3
+ILI>P]7Ah4NYTJn9PLblVX3
 !s105 execute_sv_unit
 S1
-R3
-Z27 w1773422820
-Z28 8/mnt/ncsudrive/s/sgunase2/RISCV_cpu/src/execute.sv
-Z29 F/mnt/ncsudrive/s/sgunase2/RISCV_cpu/src/execute.sv
-!i122 212
-L0 4 173
-R13
+R0
+Z20 w1773758700
+Z21 8../src/execute.sv
+Z22 F../src/execute.sv
+!i122 2
+L0 4 174
+R5
 31
-Z30 !s108 1773450232.000000
-Z31 !s107 /mnt/ncsudrive/s/sgunase2/RISCV_cpu/src/defines.svh|/mnt/ncsudrive/s/sgunase2/RISCV_cpu/src/execute.sv|
-Z32 !s90 -reportprogress|300|-work|work|-vopt|-sv|-stats=none|/mnt/ncsudrive/s/sgunase2/RISCV_cpu/src/execute.sv|
-!i113 0
-R17
-R4
-Xexecute_sv_unit
-R25
 R6
+R15
 R7
-R26
-VPCj@Emj[lS1Y;6]FY@T:N1
+!i113 0
+R8
+R9
+R10
+Xexecute_sv_unit
+R1
+R2
+R11
+R3
+V:5L=F2fHm[7oAokiHIEVA1
 r1
 !s85 0
 !i10b 1
-!s100 V8NM0`Nh^PaAV[2eOZCa_3
-IPCj@Emj[lS1Y;6]FY@T:N1
+!s100 kQFCLR2hU_R>L7DCPKDc^2
+I:5L=F2fHm[7oAokiHIEVA1
 !i103 1
 S1
-R3
-R27
-R28
-R29
-R18
-!i122 212
-R19
-R13
-31
-R30
-R31
-R32
-!i113 0
+R0
+R20
+R21
+R22
+R16
+!i122 2
 R17
-R4
-vfetch
-2/mnt/ncsudrive/s/sgunase2/RISCV_cpu/src/fetch.sv
+R5
+31
 R6
-R26
-!i10b 1
-!s100 QM6EPC?z;bA33i4=7WV?h3
-I:7MGVf^bmmXbi937>FI?52
-S1
-R3
-w1773450201
-8/mnt/ncsudrive/s/sgunase2/RISCV_cpu/src/fetch.sv
-F/mnt/ncsudrive/s/sgunase2/RISCV_cpu/src/fetch.sv
-!i122 213
-L0 2 78
+R15
+R7
+!i113 0
+R8
 R9
-R13
+R10
+vfetch
+R1
+R2
+R3
+!i10b 1
+!s100 d2?hIUlN`dQWB=L8h8eD81
+Igo=Mj;oJQW5]L=K5B8]jk1
+S1
+R0
+w1773758188
+8../src/fetch.sv
+F../src/fetch.sv
+!i122 2
+L0 2 86
+R4
+R5
 r1
 !s85 0
 31
-Z33 !s108 1773450233.000000
-!s107 /mnt/ncsudrive/s/sgunase2/RISCV_cpu/src/fetch.sv|
-!s90 -reportprogress|300|-work|work|-vopt|-sv|-stats=none|/mnt/ncsudrive/s/sgunase2/RISCV_cpu/src/fetch.sv|
-!i113 0
-R17
-R4
-vmemory
-Z34 2/mnt/ncsudrive/s/sgunase2/RISCV_cpu/src/memory.sv
 R6
+R15
 R7
-DXx4 work 14 memory_sv_unit 0 22 bgkPJD21i><jTe=no^RXG2
-Z35 !s110 1773450234
+!i113 0
+R8
 R9
+R10
+vmemory
+R1
+R2
+R11
+DXx4 work 14 memory_sv_unit 0 22 6T:Hdi<nT_GPn2`jD>?^83
+R3
+R4
 r1
 !s85 0
 !i10b 1
 !s100 k5Ch14RW8IU_MIMaGIRf[1
-I_W:[ICgZ>1^=ohD8ogY3X1
+IK7D^<:]YEoi4i;o@J15a32
 !s105 memory_sv_unit
 S1
-R3
-Z36 w1773429612
-Z37 8/mnt/ncsudrive/s/sgunase2/RISCV_cpu/src/memory.sv
-Z38 F/mnt/ncsudrive/s/sgunase2/RISCV_cpu/src/memory.sv
-!i122 214
+R0
+Z23 w1773699939
+Z24 8../src/memory.sv
+Z25 F../src/memory.sv
+!i122 2
 L0 4 90
-R13
+R5
 31
-R33
-Z39 !s107 /mnt/ncsudrive/s/sgunase2/RISCV_cpu/src/defines.svh|/mnt/ncsudrive/s/sgunase2/RISCV_cpu/src/memory.sv|
-Z40 !s90 -reportprogress|300|-work|work|-vopt|-sv|-stats=none|/mnt/ncsudrive/s/sgunase2/RISCV_cpu/src/memory.sv|
-!i113 0
-R17
-R4
-Xmemory_sv_unit
-R34
 R6
+R15
 R7
-R35
-VbgkPJD21i><jTe=no^RXG2
+!i113 0
+R8
+R9
+R10
+Xmemory_sv_unit
+R1
+R2
+R11
+R3
+V6T:Hdi<nT_GPn2`jD>?^83
 r1
 !s85 0
 !i10b 1
 !s100 ;H]@MOP1C0?d36LL<_KF72
-IbgkPJD21i><jTe=no^RXG2
+I6T:Hdi<nT_GPn2`jD>?^83
 !i103 1
 S1
-R3
-R36
-R37
-R38
-R18
-!i122 214
-R19
-R13
-31
-R33
-R39
-R40
-!i113 0
+R0
+R23
+R24
+R25
+R16
+!i122 2
 R17
-R4
-vtb_top
-Z41 2/mnt/ncsudrive/s/sgunase2/RISCV_cpu/src/tb_top.sv
+R5
+31
 R6
-Z42 DXx4 work 7 defines 0 22 Rj61?hU:SHI<]55:GA<mY0
-DXx4 work 14 tb_top_sv_unit 0 22 f1fkY6Z3W6Td>TmPa^H@g1
-Z43 !s110 1773450235
+R15
+R7
+!i113 0
+R8
 R9
+R10
+vtb_top
+R1
+R2
+Z26 DXx4 work 7 defines 0 22 z>in[o]Fz61iCEZfG[eV22
+DXx4 work 14 tb_top_sv_unit 0 22 O>oVdjD=iG9OmUIhfZCHe2
+R3
+R4
 r1
 !s85 0
 !i10b 1
 !s100 l1hd3YO7SV`oDm2<XNFcA2
-I^jGi_[[`5fQRDnj5j9mNE1
+Im3fWHm=?o6jAI@e0fCZWZ1
 !s105 tb_top_sv_unit
 S1
-R3
-Z44 w1773427403
-Z45 8/mnt/ncsudrive/s/sgunase2/RISCV_cpu/src/tb_top.sv
-Z46 F/mnt/ncsudrive/s/sgunase2/RISCV_cpu/src/tb_top.sv
-!i122 215
+R0
+R18
+Z27 8../sim/tb_top.sv
+R19
+!i122 2
 L0 5 151
-R13
+R5
 31
-Z47 !s108 1773450234.000000
-Z48 !s107 /mnt/ncsudrive/s/sgunase2/RISCV_cpu/src/defines.svh|/mnt/ncsudrive/s/sgunase2/RISCV_cpu/src/tb_top.sv|
-Z49 !s90 -reportprogress|300|-work|work|-vopt|-sv|-stats=none|/mnt/ncsudrive/s/sgunase2/RISCV_cpu/src/tb_top.sv|
-!i113 0
-R17
-R4
-Xtb_top_sv_unit
-R41
 R6
-R42
-R43
-Vf1fkY6Z3W6Td>TmPa^H@g1
+R15
+R7
+!i113 0
+R8
+R9
+R10
+Xtb_top_sv_unit
+R1
+R2
+R26
+R3
+VO>oVdjD=iG9OmUIhfZCHe2
 r1
 !s85 0
 !i10b 1
 !s100 D?4R1dYYF4lPH]cL[RmTW1
-If1fkY6Z3W6Td>TmPa^H@g1
+IO>oVdjD=iG9OmUIhfZCHe2
 !i103 1
 S1
-R3
-R44
-R45
-R46
+R0
 R18
-!i122 215
+R27
+R19
+R16
+!i122 2
 L0 3 0
-R13
+R5
 31
-R47
-R48
-R49
-!i113 0
-R17
-R4
-vtop
-Z50 2/mnt/ncsudrive/s/sgunase2/RISCV_cpu/src/top.sv
 R6
+R15
 R7
-DXx4 work 11 top_sv_unit 0 22 lYU>@YI[1z4;g9_ASJ>bM0
-R43
+!i113 0
+R8
 R9
+R10
+vtop
+R1
+R2
+R11
+DXx4 work 11 top_sv_unit 0 22 9aKMjlz^Qgl=7cS0_1OAK0
+R3
+R4
 r1
 !s85 0
 !i10b 1
-!s100 ^?BGPoXni8odhm@O036bn3
-I:^<5dPkMO`WGZ_l>7oidg3
+!s100 8kkXO4^CeHiAm2S;^cbU43
+IBm2f7iINnDWdiiYRZY8gf2
 !s105 top_sv_unit
 S1
-R3
-Z51 w1773422935
-Z52 8/mnt/ncsudrive/s/sgunase2/RISCV_cpu/src/top.sv
-Z53 F/mnt/ncsudrive/s/sgunase2/RISCV_cpu/src/top.sv
-!i122 216
-L0 4 266
-R13
+R0
+Z28 w1773759880
+Z29 8../src/top.sv
+Z30 F../src/top.sv
+!i122 2
+L0 4 298
+R5
 31
-R22
-Z54 !s107 /mnt/ncsudrive/s/sgunase2/RISCV_cpu/src/defines.svh|/mnt/ncsudrive/s/sgunase2/RISCV_cpu/src/top.sv|
-Z55 !s90 -reportprogress|300|-work|work|-vopt|-sv|-stats=none|/mnt/ncsudrive/s/sgunase2/RISCV_cpu/src/top.sv|
-!i113 0
-R17
-R4
-Xtop_sv_unit
-R50
 R6
+R15
 R7
-R43
-VlYU>@YI[1z4;g9_ASJ>bM0
+!i113 0
+R8
+R9
+R10
+Xtop_sv_unit
+R1
+R2
+R11
+R3
+V9aKMjlz^Qgl=7cS0_1OAK0
 r1
 !s85 0
 !i10b 1
-!s100 Oa0O9bKNjiDUa?en:Hd1?3
-IlYU>@YI[1z4;g9_ASJ>bM0
+!s100 R^B84gFkJ6LVYSfXERN7A2
+I9aKMjlz^Qgl=7cS0_1OAK0
 !i103 1
 S1
-R3
-R51
-R52
-R53
-R18
-!i122 216
-R19
-R13
-31
-R22
-R54
-R55
-!i113 0
+R0
+R28
+R29
+R30
+R16
+!i122 2
 R17
-R4
-vwrite_back
-R20
+R5
+31
 R6
+R15
 R7
-DXx4 work 18 write_back_sv_unit 0 22 5N<mabo:g[LDm_B:<iSS01
-R21
+!i113 0
+R8
 R9
+R10
+vwrite_back
+R1
+R2
+R11
+DXx4 work 18 write_back_sv_unit 0 22 jGe]k<8]B?zS<7o2FS@4Q3
+R3
+R4
 r1
 !s85 0
 !i10b 1
 !s100 AZl[c;]bT:4>lNi@?ORNn3
-Ii<9VBC2iN9]QJ>;:BRmIQ1
+I76INBWldP6K7bkA6oWj^_1
 !s105 write_back_sv_unit
 S1
-R3
-Z56 w1773350489
-Z57 8/mnt/ncsudrive/s/sgunase2/RISCV_cpu/src/write_back.sv
-Z58 F/mnt/ncsudrive/s/sgunase2/RISCV_cpu/src/write_back.sv
-!i122 217
+R0
+Z31 w1773699940
+Z32 8../src/write_back.sv
+Z33 F../src/write_back.sv
+!i122 2
 L0 4 36
-R13
+R5
 31
-R22
-R23
-R24
-!i113 0
-R17
-R4
-Xwrite_back_sv_unit
-R20
 R6
+R15
 R7
-R21
-V5N<mabo:g[LDm_B:<iSS01
+!i113 0
+R8
+R9
+R10
+Xwrite_back_sv_unit
+R1
+R2
+R11
+R3
+VjGe]k<8]B?zS<7o2FS@4Q3
 r1
 !s85 0
 !i10b 1
 !s100 TFliKBj[Gg58l[FRDPka@2
-I5N<mabo:g[LDm_B:<iSS01
+IjGe]k<8]B?zS<7o2FS@4Q3
 !i103 1
 S1
-R3
-R56
-R57
-R58
-R18
-!i122 217
-R19
-R13
-31
-R22
-R23
-R24
-!i113 0
+R0
+R31
+R32
+R33
+R16
+!i122 2
 R17
-R4
+R5
+31
+R6
+R15
+R7
+!i113 0
+R8
+R9
+R10
