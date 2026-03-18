@@ -94,9 +94,12 @@ module tb_top;
 // ==========================================
     // Test Sequence: The Directed Hazard Stress Test
     // ==========================================
+// ==========================================
+    // Test Sequence: The Branch Squash Test
+    // ==========================================
     initial begin
         $display("==================================================");
-        $display("   STARTING DIRECTED STRESS TEST");
+        $display("   STARTING CONTROL HAZARD (BRANCH) TEST");
         $display("==================================================");
 
         // 1. Initialize Memories with Zeros
@@ -105,32 +108,34 @@ module tb_top;
             //dmem[i] = 32'h00000000;
         end
 
-        // --------------------------------------------------
-        // DETERMINISTIC PAYLOADS
-        // --------------------------------------------------
-         // Hardcoded data at Address 0x14 (Word 5)
-        
         // 2. Load the Assembly Program into IMEM
         // --------------------------------------------------
         
-        // PC=0: LOAD $23, 0($2)  
-        // Action: Load data from RAM (100) into Register 23.
-        imem[0] = {LOAD_OPCODE, 5'd2, 5'd23, 16'h0000}; 
+        // PC=0: BEQ $1, $2, +4
+        // ACTION: $1 and $2 are equal (both 100). Branch TAKEN!
+        // TARGET: PC + (4 << 2) = PC + 16 = Address 16 (0x10).
+        imem[0] = {BRANCH_OPCODE, 5'd1, 5'd2, 16'h0004}; 
         
-        // PC=4: ADD $19, $23, $7  
-        // HAZARD: Load-Use on $23. R19 = 100 + 50 = 150.
-        imem[1] = {R_OPCODE, 5'd23, 5'd7, 5'd19, 5'd0, ADD}; 
+        // PC=4: ADD $9, $1, $2 
+        // HAZARD: This was fetched while the BEQ was decoding. 
+        // EXPECTATION: MUST BE SQUASHED (Turned into NOP).
+        imem[1] = {R_OPCODE, 5'd1, 5'd2, 5'd9, 5'd0, ADD}; 
 
-        // PC=8: SUB $5, $19, $23 
-        // DOUBLE HAZARD: EX-to-EX on $19, MEM-to-EX on $23. R5 = 150 - 100 = 50.
-        imem[2] = {R_OPCODE, 5'd19, 5'd23, 5'd5, 5'd0, SUB}; 
+        // PC=8: ADD $10, $1, $2 
+        // HAZARD: This was fetched while the BEQ was executing.
+        // EXPECTATION: MUST BE SQUASHED (Turned into NOP).
+        imem[2] = {R_OPCODE, 5'd1, 5'd2, 5'd10, 5'd0, ADD}; 
 
-        // PC=12: ADD $31, $5, $19 
-        // DOUBLE HAZARD: EX-to-EX on $5, MEM-to-EX on $19. R31 = 50 + 150 = 200.
-        imem[3] = {R_OPCODE, 5'd5, 5'd19, 5'd31, 5'd0, ADD}; 
+        // PC=12: ADD $11, $1, $2 
+        // EXPECTATION: Skipped entirely by the PC jump.
+        imem[3] = {R_OPCODE, 5'd1, 5'd2, 5'd11, 5'd0, ADD}; 
+
+        // PC=16 (0x10): SUB $31, $1, $2 
+        // TARGET: This is where execution should safely resume!
+        // RESULT: R31 = 100 - 100 = 0.
+        imem[4] = {R_OPCODE, 5'd1, 5'd2, 5'd31, 5'd0, SUB}; 
 
         // Add NOPs to let the pipeline flush safely
-        imem[4] = 32'h00000000; 
         imem[5] = 32'h00000000; 
         imem[6] = 32'h00000000; 
         imem[7] = 32'h00000000; 
@@ -138,12 +143,15 @@ module tb_top;
         // 3. Apply System Reset
         resetn = 0;
         #20;
+
+        // 4. Backdoor load known variables into the Register File
+
         // 5. Release Reset
         resetn = 1;
 
-        // 6. Monitor the Pipeline Math
-        $monitor("Time: %3t | PC: %2h | EX_OPC: %2h | ID_RS1: %3d | ID_RS2: %3d || EX_ALU_OUT: %3d", 
-                 $time, u_top.de_pc_o, u_top.ex_opcode, u_top.de_rs1, u_top.de_rs2, u_top.ex_alu_result);
+        // 6. Monitor the Pipeline Math and Squashes
+        $monitor("Time: %3t | IF_PC: %2h | EX_OPC: %2h | EX_ALU_OUT: %3d | Sqsh_ID: %b | Sqsh_EX: %b", 
+                 $time, u_top.fd_pc, u_top.ex_opcode, u_top.ex_alu_result, u_top.cu_squash_decode, u_top.cu_squash_execute);
 
         #150;
         

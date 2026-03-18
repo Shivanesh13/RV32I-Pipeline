@@ -80,7 +80,7 @@ module execute(
         jal_taken_o         = 1'b0;
         jal_target_o        = 32'h0;
 
-        if (decode_valid_i && !squash_execute_i) begin
+        if (decode_valid_i ) begin
             case (opcode_i)
                 R_OPCODE: begin
                     is_reg_write = 1'b1;

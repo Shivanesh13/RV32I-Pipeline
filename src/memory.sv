@@ -78,8 +78,7 @@ assign mem_ready_o = wb_ready_i && !stall_i;
                 end else begin
                     wb_mem_data_o <= alu_result_i;
                 end
-
-            end else if (!stall_i) begin
+            end else begin
                 // Pipeline Bubble
                 mem_valid_o    <= 1'b0;
                 wb_mem_data_o  <= 32'h00000000;

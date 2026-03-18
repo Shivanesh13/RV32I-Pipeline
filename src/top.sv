@@ -91,7 +91,6 @@ logic [DATA_WIDTH-1:0] ex_jal_target;
 logic cu_br_fetch;
 logic cu_jal_fetch;
 logic cu_exception_fetch;
-logic cu_squash_fetch;
 logic cu_squash_decode;
 logic cu_squash_execute;
 logic cu_squash_memory;
@@ -115,7 +114,6 @@ control_unit u_control_unit (
     .br_fetch_o         (cu_br_fetch),
     .jal_fetch_o        (cu_jal_fetch),
     .exception_fetch_o  (cu_exception_fetch),
-    .squash_fetch_o     (cu_squash_fetch),
     .squash_decode_o    (cu_squash_decode),
     .squash_execute_o   (cu_squash_execute),
     .squash_memory_o    (cu_squash_memory),
@@ -143,7 +141,6 @@ fetch u_fetch (
     
     // Control Flow Redirects
     .exception_i      (cu_exception_fetch),
-    .exception_addr_i (32'h00000000),
     .branch_i         (cu_br_fetch),
     .branch_addr_i    (ex_branch_target),
     .jal_i            (cu_jal_fetch),

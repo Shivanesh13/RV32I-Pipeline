@@ -57,8 +57,8 @@ always_ff @(posedge clk or negedge resetn) begin : blockName
     if(!resetn) begin
         //MEM_DATA <= '{default: 32'h00000000};
         // did for initial testing purposes 
-        MEM_DATA[1] <= 32'h00000020;
-        MEM_DATA[2] <= 32'h00000014;;
+        MEM_DATA[1] <= 32'h00000064;
+        MEM_DATA[2] <= 32'h00000064;;
         MEM_DATA[3] <= 32'd5;
         MEM_DATA[4] <= 32'h0000000A;
         MEM_DATA[5] <= 32'h0000000F;
@@ -178,7 +178,7 @@ always_ff @(posedge clk or negedge resetn) begin
                 BRANCH_OPCODE: begin
                     opcode_o <= BRANCH_OPCODE;
                     rs1_o <= rs1_reg;
-                    rd_o <= inst_i[15:11];
+                    rs2_o <= rs2_reg;
                     imm_o <= inst_i[15:0];
                 end
                 JAL_OPCODE: begin

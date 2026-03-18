@@ -21,7 +21,6 @@ module fetch(
     
     // Control Flow 
     input  logic        exception_i,
-    input  logic [31:0] exception_addr_i,
     input  logic        branch_i,         // Added: Branch taken signal
     input  logic [31:0] branch_addr_i,     // Added: Branch target address
     input  logic        jal_i,
@@ -30,32 +29,42 @@ module fetch(
 
     logic [31:0] pc_reg, pc_next, pc_reg_d;
     logic        instruction_read; 
+    logic [31:0] pc_prev;
 
     // Continuous assignments for memory interface
     assign i_mem_addr = pc_reg;
     assign i_mem_read = instruction_read;
+
+    parameter EXCEPTION_ADDR = 32'h00000000;
 
     // dont think about branch and exception for now 
 
     always_comb begin
         pc_next = pc_reg;
         instruction_read = 1'b0;
-        if(branch_i) begin
+        if(exception_i) begin
+            pc_next = EXCEPTION_ADDR;
+            instruction_read = 1'b1;
+        end
+        else if(branch_i) begin
             pc_next = branch_addr_i;
+            instruction_read = 1'b1;
         end
         else if(jal_i) begin
             pc_next = jal_addr_i;
+            instruction_read = 1'b1;
         end
-        if(id_ready_i && i_mem_ready && !stall_i) begin
+        else if(id_ready_i && i_mem_ready && !stall_i) begin
             pc_next = pc_reg + 4;
             instruction_read = 1'b1;
         end
     end 
 
-logic [31:0] pc_prev;
+
     always_ff @(posedge clk, negedge resetn) begin
         if(!resetn) begin
             pc_reg <= 'b0;
+            pc_prev <= 'b0;
         end else begin
             if(i_mem_ready && id_ready_i && !stall_i) begin
                 pc_reg <= pc_next;
