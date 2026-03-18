@@ -95,7 +95,7 @@ logic cu_squash_decode;
 logic cu_squash_execute;
 logic cu_squash_memory;
 logic cu_squash_writeback;
-
+logic ex_invalid_inst;
 // Global stall placeholder (Decode handles Load-Use internally)
 logic global_stall;
 assign global_stall = 1'b0;
@@ -109,7 +109,7 @@ control_unit u_control_unit (
     .branch_target_i    (ex_branch_target),
     .jal_taken_i        (ex_jal_taken),
     .jal_target_i       (ex_jal_target),
-    .exception_i        (1'b0), // Tied to 0 for now
+    .invalid_inst_i     (ex_invalid_inst), 
     
     .br_fetch_o         (cu_br_fetch),
     .jal_fetch_o        (cu_jal_fetch),
@@ -140,7 +140,7 @@ fetch u_fetch (
     .inst_valid_o     (fd_inst_valid),
     
     // Control Flow Redirects
-    .exception_i      (cu_exception_fetch),
+    .invalid_inst_i   (cu_exception_fetch),
     .branch_i         (cu_br_fetch),
     .branch_addr_i    (ex_branch_target),
     .jal_i            (cu_jal_fetch),
@@ -186,7 +186,8 @@ decode u_decode (
     .data_mem_loopback_i (mem_data_loopback),
     
     // Branch Squash
-    .squash_decode_i     (cu_squash_decode)
+    .squash_decode_i     (cu_squash_decode),
+    .invalid_inst_o      (ex_invalid_inst)
 );
 
 // ─────────────────────────────────────────

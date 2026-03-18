@@ -40,7 +40,9 @@ module decode(
 
     input logic [REG_WIDTH-1:0] reg_mem_loopback_i,
     input logic [DATA_WIDTH-1:0] data_mem_loopback_i,
-    input logic squash_decode_i
+    input logic squash_decode_i,
+
+    output logic invalid_inst_o
 );
 
 logic [DATA_WIDTH-1:0] pc_reg;
@@ -55,40 +57,14 @@ logic [REG_WIDTH-1:0] ex_rd, reg_data_0, reg_data_1;
 
 always_ff @(posedge clk or negedge resetn) begin : blockName
     if(!resetn) begin
-        //MEM_DATA <= '{default: 32'h00000000};
-        // did for initial testing purposes 
-        MEM_DATA[1] <= 32'h00000064;
-        MEM_DATA[2] <= 32'h00000064;;
-        MEM_DATA[3] <= 32'd5;
-        MEM_DATA[4] <= 32'h0000000A;
-        MEM_DATA[5] <= 32'h0000000F;
-        MEM_DATA[6] <= 32'h00000014;
-        MEM_DATA[7] <= 32'd50;
-        MEM_DATA[8] <= 32'h0000001E;
-        MEM_DATA[9] <= 32'h00000023;
-        MEM_DATA[10] <= 32'h00000028;
-        MEM_DATA[11] <= 32'h0000002D;
-        MEM_DATA[12] <= 32'h00000032;
-        MEM_DATA[13] <= 32'h00000037;
-        MEM_DATA[14] <= 32'h0000003C;
-        MEM_DATA[15] <= 32'h00000041;
-        MEM_DATA[16] <= 32'h00000046;
-        MEM_DATA[17] <= 32'h0000004B;
-        MEM_DATA[18] <= 32'h00000050;
-        MEM_DATA[19] <= 32'h00000055;
-        MEM_DATA[20] <= 32'h0000005A;
-        MEM_DATA[21] <= 32'h0000005F;
-        MEM_DATA[22] <= 32'h00000064;
-        MEM_DATA[23] <= 32'h00000069;
-        MEM_DATA[24] <= 32'h0000006E;
-        MEM_DATA[25] <= 32'h00000073;
-        MEM_DATA[26] <= 32'h00000078;
-        MEM_DATA[27] <= 32'h0000007D;
-        MEM_DATA[28] <= 32'h00000082;
-        MEM_DATA[29] <= 32'h00000087;
-        MEM_DATA[30] <= 32'h0000008C;
-        MEM_DATA[31] <= 32'h00000091;
-        memory_ready_o <= 1'b0;
+            // Hardwire r0 to 0 (RISC-V standard)
+            MEM_DATA[0] <= 32'h00000000;
+            MEM_DATA[1] <= 32'd100;
+            MEM_DATA[2] <= 32'd50; 
+            for(int i = 3; i < 32; i++) begin
+                MEM_DATA[i] <= 32'h00000000;
+            end
+            memory_ready_o <= 1'b0;
     end else begin
         memory_ready_o <= 1'b1;
         if(memory_valid_i) begin
@@ -101,7 +77,7 @@ end
 
 
 logic [DATA_WIDTH-1:0] rs1_reg, rs2_reg;
-
+logic inst_valid_i_d;
 
 always_comb begin
     decode_ready_o = execute_ready_i && !stall_i;
@@ -141,9 +117,11 @@ always_ff @(posedge clk or negedge resetn) begin
         imm_o <= 16'h0000;
         jump_target_o <= 26'h0000000;
         //decode_ready_o <= 1'b0;
+        invalid_inst_o <= 1'b0;
         decode_valid_o <= 1'b0;
     end else begin
         if(squash_decode_i) begin
+            invalid_inst_o <= 1'b0;
             decode_valid_o <= 1'b0;
             pc_valid_o <= 1'b0;
             pc_o <= 32'h00000000;
@@ -153,7 +131,6 @@ always_ff @(posedge clk or negedge resetn) begin
             rs2_o <= 32'h00000000;
         end
         else if(inst_valid_i && decode_ready_o) begin
-            pc_valid_o <= 1'b1;
             pc_o <= pc_i;
             case(inst_i[31:26])
                 R_OPCODE: begin
@@ -162,28 +139,37 @@ always_ff @(posedge clk or negedge resetn) begin
                     rs1_o <= rs1_reg;
                     rs2_o <= rs2_reg;
                     rd_o <= inst_i[15:11];
+                    pc_valid_o <= 1'b1;
+                    invalid_inst_o <= 1'b0;
                 end
                 LOAD_OPCODE: begin
                     opcode_o <= LOAD_OPCODE;
                     rs1_o <= rs1_reg;
                     rd_o <= inst_i[20:16];
                     imm_o <= inst_i[15:0];
+                    invalid_inst_o <= 1'b0;
                 end
                 STORE_OPCODE: begin
                     opcode_o <= STORE_OPCODE;
                     rs1_o <= rs1_reg;
                     rs2_o <= rs2_reg;
                     imm_o <= inst_i[15:0];
+                    pc_valid_o <= 1'b1;
+                    invalid_inst_o <= 1'b0;
                 end
                 BRANCH_OPCODE: begin
                     opcode_o <= BRANCH_OPCODE;
                     rs1_o <= rs1_reg;
                     rs2_o <= rs2_reg;
                     imm_o <= inst_i[15:0];
+                    pc_valid_o <= 1'b1;
+                    invalid_inst_o <= 1'b0;
                 end
                 JAL_OPCODE: begin
                     opcode_o <= JAL_OPCODE;
                     jump_target_o <= inst_i[25:0];
+                    pc_valid_o <= 1'b1;
+                    invalid_inst_o <= 1'b0;
                 end
                 default: begin
                     opcode_o <= 6'b000000;
@@ -192,6 +178,8 @@ always_ff @(posedge clk or negedge resetn) begin
                     rs2_o <= 32'h00000000;
                     rd_o <= 5'b00000;
                     imm_o <= 16'h0000;
+                    pc_valid_o <= 1'b0;
+                    invalid_inst_o <= 1'b1;
                 end
             endcase
             decode_valid_o <= 1'b1;

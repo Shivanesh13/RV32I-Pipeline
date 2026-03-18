@@ -1,3 +1,5 @@
+`include "defines.svh"
+import defines::*;
 
 module fetch(
     input  logic        clk,
@@ -20,7 +22,7 @@ module fetch(
     output logic        inst_valid_o,
     
     // Control Flow 
-    input  logic        exception_i,
+    input  logic        invalid_inst_i,
     input  logic        branch_i,         // Added: Branch taken signal
     input  logic [31:0] branch_addr_i,     // Added: Branch target address
     input  logic        jal_i,
@@ -35,14 +37,16 @@ module fetch(
     assign i_mem_addr = pc_reg;
     assign i_mem_read = instruction_read;
 
-    parameter EXCEPTION_ADDR = 32'h00000000;
-
     // dont think about branch and exception for now 
 
     always_comb begin
         pc_next = pc_reg;
         instruction_read = 1'b0;
-        if(exception_i) begin
+        if(!resetn) begin
+            pc_next = FETCH_START_ADDR;
+            instruction_read = 1'b00;
+        end
+        else if(invalid_inst_i) begin
             pc_next = EXCEPTION_ADDR;
             instruction_read = 1'b1;
         end
@@ -63,8 +67,8 @@ module fetch(
 
     always_ff @(posedge clk, negedge resetn) begin
         if(!resetn) begin
-            pc_reg <= 'b0;
-            pc_prev <= 'b0;
+            pc_reg <= FETCH_START_ADDR - 4;
+            pc_prev <= FETCH_START_ADDR - 4;
         end else begin
             if(i_mem_ready && id_ready_i && !stall_i) begin
                 pc_reg <= pc_next;
@@ -75,21 +79,14 @@ module fetch(
         end
     end
 
-    always_ff @(posedge clk or negedge resetn) begin
-        if(!resetn) begin
-            pc_o         <= 32'h0;
-            inst_o       <= 32'h0;
-            inst_valid_o <= 1'b0;
-        end 
-        else if (!stall_i && id_ready_i) begin // If stalled, do NOTHING. Just hold old values.
+    always_comb begin
             if (i_mem_valid) begin
-                pc_o         <= pc_reg;
-                inst_o       <= i_mem_data;
-                inst_valid_o <= 1'b1;
+                pc_o         = pc_reg;
+                inst_o       = i_mem_data;
+                inst_valid_o = 1'b1;
             end else begin
-                inst_valid_o <= 1'b0;
+                inst_valid_o = 1'b0;
             end
-        end
     end
 
 
