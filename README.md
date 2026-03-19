@@ -38,18 +38,23 @@ The processor is verified using a comprehensive SystemVerilog testbench (`tb_top
 * **Sparse-Memory Simulation:** Utilizes associative arrays to simulate a massive unified instruction and data memory space without memory overhead, allowing tests to jump cleanly between standard execution (`0x3000`) and exception handling (`0x0000`).
 * **Directed Stress Testing:** Includes specific assembly sequences designed to verify forward/backward branch squashing, absolute jumps, and exception trapping cycle-by-cycle.
 
-## 📂 Directory Structure
+## 🚀 Quick Start (How to Run)
 
-```text
-├── src/
-│   ├── defines.svh        # Global parameters, opcodes, and structs
-│   ├── top.sv             # Top-level wrapper
-│   ├── control_unit.sv    # Global hazard and pipeline flush manager
-│   ├── fetch.sv           # IF Stage & PC Logic
-│   ├── decode.sv          # ID Stage & Hazard unit hookups
-│   ├── execute.sv         # EX Stage & ALU
-│   ├── memory.sv          # MEM Stage
-│   └── write_back.sv      # WB Stage
-├── tb/
-│   └── tb_top.sv          # Main testbench with deterministic and random stress tests
-└── README.md
+This project uses a `Makefile` to streamline compilation, simulation, and waveform viewing. Ensure you have your SystemVerilog simulator (e.g., Verilator, ModelSim, or Icarus Verilog) and a waveform viewer (e.g., GTKWave) installed.
+
+```bash
+# 1. Clone the repository
+git clone [https://github.com/Shivanesh13/RV32I-Pipeline.git](https://github.com/Shivanesh13/RV32I-Pipeline.git)
+cd RV32I-Pipeline
+
+# 2. Compile the SystemVerilog source and testbench files
+make compile
+
+# 3. Run the simulation (executes tb_top.sv)
+make sim
+
+# 4. View the generated waveforms (.vcd) in GTKWave
+make wave
+
+# 5. Clean up build files and simulation artifacts
+make clean
