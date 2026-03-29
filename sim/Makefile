@@ -38,7 +38,13 @@ compile: lib
 	@echo "========================================"
 	@echo " Compiling SystemVerilog Sources..."
 	@echo "========================================"
-	$(VLOG) $(VLOG_FLAGS) ../$(SRC_DIR)/*.sv ../$(TB_DIR)/*.sv
+	$(VLOG) $(VLOG_FLAGS) ../$(SRC_DIR)/*.sv ../$(TB_DIR)/tb_top.sv
+
+compile_advanced: lib
+	@echo "========================================"
+	@echo " Compiling SystemVerilog Sources..."
+	@echo "========================================"
+	$(VLOG) $(VLOG_FLAGS) ../$(SRC_DIR)/*.sv ../$(TB_DIR)/tb_advanced.sv
 
 # ------------------------------------------------------------------------------
 # 3. Run Simulation in Console (Batch Mode)
@@ -60,6 +66,12 @@ gui: compile
 	@echo " Launching QuestaSim GUI..."
 	@echo "========================================"
 	$(VSIM) -voptargs=+acc -do "add wave -r /*; log -r *; run -all" work.$(TOP_MODULE)
+
+gui_advanced: compile_advanced
+	@echo "========================================"
+	@echo " Launching QuestaSim GUI..."
+	@echo "========================================"
+	$(VSIM) -voptargs=+acc -do "add wave -r /*; log -r *; run -all" work.tb_advanced
 
 # ------------------------------------------------------------------------------
 # 5. Clean Generated Files

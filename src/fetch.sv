@@ -44,7 +44,7 @@ module fetch(
         instruction_read = 1'b0;
         if(!resetn) begin
             pc_next = FETCH_START_ADDR;
-            instruction_read = 1'b00;
+            instruction_read = 1'b0;
         end
         else if(invalid_inst_i) begin
             pc_next = EXCEPTION_ADDR;
@@ -68,24 +68,22 @@ module fetch(
     always_ff @(posedge clk, negedge resetn) begin
         if(!resetn) begin
             pc_reg <= FETCH_START_ADDR - 4;
-            pc_prev <= FETCH_START_ADDR - 4;
         end else begin
             if(i_mem_ready && id_ready_i && !stall_i) begin
                 pc_reg <= pc_next;
-                pc_prev <= pc_reg;
             end
-            else 
-                pc_reg <= pc_prev; 
         end
     end
 
     always_comb begin
-            if (i_mem_valid) begin
+            if (i_mem_valid && !(branch_i || jal_i || invalid_inst_i)) begin
                 pc_o         = pc_reg;
                 inst_o       = i_mem_data;
                 inst_valid_o = 1'b1;
             end else begin
                 inst_valid_o = 1'b0;
+                pc_o = pc_reg;
+                inst_o = 32'h00000000;
             end
     end
 

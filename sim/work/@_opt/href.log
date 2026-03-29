@@ -1,7 +1,0 @@
-BEGIN 1:top:fast:work
-    ex_opcode :  1:tb_top:fast:work
-    cu_squash_decode :  1:tb_top:fast:work
-    fd_pc :  1:tb_top:fast:work
-    ex_alu_result :  1:tb_top:fast:work
-    cu_squash_execute :  1:tb_top:fast:work
-END 

@@ -78,16 +78,14 @@ end
 
 logic [DATA_WIDTH-1:0] rs1_reg, rs2_reg;
 logic inst_valid_i_d;
-
+assign decode_ready_o = (reg_loopback_o == inst_i[25:21] || reg_loopback_o == inst_i[20:16]) ? execute_ready_i && !stall_i && !load_op_o : execute_ready_i && !stall_i;
 always_comb begin
-    decode_ready_o = execute_ready_i && !stall_i;
     if(reg_mem_loopback_i == inst_i[25:21]) begin
         rs1_reg = data_mem_loopback_i;
     end 
     else if(reg_loopback_o == inst_i[25:21]) begin
         rs1_reg = data_loopback_o;
-        decode_ready_o = execute_ready_i && !stall_i && !load_op_o;
-    end else if(memory_addr_i == inst_i[25:21]) begin
+    end else if(memory_addr_i == inst_i[25:21] && memory_valid_i) begin
         rs1_reg = memory_data_i;
     end else begin
         rs1_reg = MEM_DATA[inst_i[25:21]];
@@ -97,8 +95,7 @@ always_comb begin
         rs2_reg = data_mem_loopback_i;
     end else if(reg_loopback_o == inst_i[20:16]) begin
         rs2_reg = data_loopback_o;
-        decode_ready_o = execute_ready_i && !stall_i && !load_op_o;
-    end else if(memory_addr_i == inst_i[20:16]) begin
+    end else if(memory_addr_i == inst_i[20:16] && memory_valid_i) begin
         rs2_reg = memory_data_i;
     end else begin
         rs2_reg = MEM_DATA[inst_i[20:16]];
@@ -148,6 +145,7 @@ always_ff @(posedge clk or negedge resetn) begin
                     rd_o <= inst_i[20:16];
                     imm_o <= inst_i[15:0];
                     invalid_inst_o <= 1'b0;
+                    pc_valid_o <= 1'b1;
                 end
                 STORE_OPCODE: begin
                     opcode_o <= STORE_OPCODE;

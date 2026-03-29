@@ -88,6 +88,7 @@ module execute(
                         ADD: alu_math_result = rs1_i + rs2_i;
                         SUB: alu_math_result = rs1_i - rs2_i;
                         AND: alu_math_result = rs1_i & rs2_i;
+                        OR:  alu_math_result = rs1_i | rs2_i;
                         XOR: alu_math_result = rs1_i ^ rs2_i;
                         MUL: alu_math_result = rs1_i * rs2_i;
                         default: alu_math_result = 32'h0;
@@ -108,10 +109,10 @@ module execute(
                 end
 
                 BRANCH_OPCODE: begin
-                    // Simple BEQ (Branch if Equal) Implementation
+                    // BEQ: target = PC_of_branch + (sign_ext(imm) << 2)  (no extra +4)
                     if (rs1_i == rs2_i) begin
                         branch_taken_o  = 1'b1;
-                        branch_target_o = pc_i + {{14{imm_i[15]}}, imm_i, 2'b00}; // PC-relative target
+                        branch_target_o = pc_i + {{14{imm_i[15]}}, imm_i, 2'b00};
                     end
                 end
 

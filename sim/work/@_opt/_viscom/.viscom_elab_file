@@ -1,1 +1,0 @@
-/mnt/apps/public/COE/mg_apps/questa2025.1_1/questasim/linux_x86_64/VisualizerRls/bin/viscom -nolock -quiet -jmem_size 1081632 work.tb_top -quiet -auto_acc_if_foreign -work work +acc -allow_unnamed -o _opt -id 1-043201bca3c1-69b9b985-80ca1-1cbb94 +__betafsm

@@ -1,0 +1,7 @@
+# Questa / ModelSim
+sim/work/
+sim/transcript
+sim/vsim.wlf
+*.wlf
+*_opt*/
+*_lock
