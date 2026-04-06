@@ -5,3 +5,7 @@ sim/vsim.wlf
 *.wlf
 *_opt*/
 *_lock
+
+# Python cache/build artifacts
+__pycache__/
+*.pyc
