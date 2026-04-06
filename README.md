@@ -1,4 +1,4 @@
-# CPU Design: 5-Stage Pipelined RISC-V CPU
+# CPU Design: 5-Stage Pipelined CPU
 
 A 32-bit RISC-V (RV32I) processor core written in SystemVerilog, featuring a classic 5-stage in-order pipeline. This project focuses heavily on cycle-accurate hazard resolution, implementing full data forwarding, dynamic pipeline stalling, and global branch squashing to maximize Instructions Per Cycle (IPC).
 
