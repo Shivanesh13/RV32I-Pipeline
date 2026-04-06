@@ -40,21 +40,53 @@ The processor is verified using a comprehensive SystemVerilog testbench (`tb_top
 
 ## 🚀 Quick Start (How to Run)
 
-This project uses a `Makefile` to streamline compilation, simulation, and waveform viewing. Ensure you have your SystemVerilog simulator (e.g., Verilator, ModelSim, or Icarus Verilog) and a waveform viewer (e.g., GTKWave) installed.
+This project uses the `sim/Makefile` to support two workflows:
+
+1. **Default built-in validation program** (advanced directed test)
+2. **File-driven C program flow** (`compiler/<name>.c` -> IMEM/DMEM -> run)
+
+### Default testbench run (no input file)
 
 ```bash
-# 1. Clone the repository
-git clone [https://github.com/Shivanesh13/RV32I-Pipeline.git](https://github.com/Shivanesh13/RV32I-Pipeline.git)
-cd RV32I-Pipeline
+cd sim
 
-# 2. Compile the SystemVerilog source and testbench files
+# Console run (uses tb_advanced default program)
+make run_code
+
+# GUI run
+make gui_code
+```
+
+### Run your own C program
+
+```bash
+cd sim
+
+# 1) Build compiler artifacts and memory images from compiler/foo.c
+make prep_code file=foo
+
+# Generates:
+#   compiler/foo.asm
+#   compiler/foo_opcodes.json
+#   sim/foo_opcodes.mem   (IMEM)
+#   sim/foo_dmem.mem      (DMEM, from .data pool)
+
+# 2) Run in console
+make run_code file=foo
+
+# 3) Run in GUI
+make gui_code file=foo
+```
+
+### Useful low-level targets
+
+```bash
+# Compile RTL + tb_top only
 make compile
 
-# 3. Run the simulation (executes tb_top.sv)
-make sim
+# Compile RTL + tb_advanced only
+make compile_advanced
 
-# 4. View the generated waveforms (.vcd) in GTKWave
-make wave
-
-# 5. Clean up build files and simulation artifacts
+# Clean generated simulation files
 make clean
+```

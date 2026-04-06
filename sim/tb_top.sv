@@ -98,22 +98,139 @@ module tb_top;
         end
     end
 
+    task automatic load_imem_from_memfile(
+        input string memfile,
+        output int unsigned last_idx
+    );
+        int fd;
+        int rc;
+        int loaded;
+        int unsigned idx;
+        logic [31:0] word;
+        // Ensure memfile-driven runs use only externally supplied instructions.
+        imem.delete();
+        loaded = 0;
+        last_idx = 0;
+        fd = $fopen(memfile, "r");
+        if (fd == 0) begin
+            $fatal(1, "Failed to open opcode memory file: %s", memfile);
+        end
+        while (!$feof(fd)) begin
+            rc = $fscanf(fd, "%h %h\n", idx, word);
+            if (rc == 2) begin
+                imem[idx] = word;
+                loaded++;
+                if (loaded == 1 || idx > last_idx) begin
+                    last_idx = idx;
+                end
+            end
+        end
+        $fclose(fd);
+        if (loaded == 0) begin
+            $fatal(1, "Opcode memory file is empty: %s", memfile);
+        end
+        $display("[TB] Loaded %0d instructions from %s", loaded, memfile);
+        $display("[TB] Highest IMEM index loaded: %0d", last_idx);
+    endtask
+
+    task automatic load_dmem_from_memfile(input string memfile);
+        int fd;
+        int rc;
+        int loaded;
+        int unsigned idx;
+        logic [31:0] word;
+        dmem.delete();
+        loaded = 0;
+        fd = $fopen(memfile, "r");
+        if (fd == 0) begin
+            $fatal(1, "Failed to open data memory file: %s", memfile);
+        end
+        while (!$feof(fd)) begin
+            rc = $fscanf(fd, "%h %h\n", idx, word);
+            if (rc == 2) begin
+                dmem[idx] = word;
+                loaded++;
+            end
+        end
+        $fclose(fd);
+        $display("[TB] Loaded %0d data words from %s", loaded, memfile);
+    endtask
+
+    task automatic run_until_last_fetch(
+        input int unsigned last_idx,
+        input int unsigned tail_cycles,
+        input int unsigned max_cycles
+    );
+        int cycles;
+        bit seen_last;
+        seen_last = 0;
+
+        for (cycles = 0; cycles < max_cycles; cycles++) begin
+            @(posedge clk);
+            if (resetn && i_mem_read && ((i_mem_addr >> 2) == last_idx)) begin
+                seen_last = 1;
+                $display("[TB] Last instruction fetched at cycle %0d (IMEM idx=%0d, PC=0x%h)",
+                         cycles, last_idx, i_mem_addr);
+                break;
+            end
+        end
+
+        if (!seen_last) begin
+            $fatal(1, "[TB] Timed out waiting for last instruction fetch (idx=%0d)", last_idx);
+        end
+
+        repeat (tail_cycles) @(posedge clk);
+    endtask
+
+    task automatic dump_all_gprs();
+        int r;
+        $display("==================================================");
+        $display(" Final Register Dump (r0-r31)");
+        $display("==================================================");
+        for (r = 0; r < 32; r++) begin
+            $display("r%0d = 0x%08h (%0d)", r, u_top.u_decode.MEM_DATA[r], $signed(u_top.u_decode.MEM_DATA[r]));
+        end
+    endtask
+
     // ==========================================
-    // Test Sequence: The Full Pipeline Test
-    // ==========================================
-// ==========================================
-    // Test Sequence: The Full Pipeline Test
-    // ==========================================
-// ==========================================
-    // Test Sequence: The Full Pipeline Test
+    // Test Sequence
     // ==========================================
     initial begin
-        // Declarations MUST be at the top of the block!
-        int base_addr      = 32'h3000 >> 2; // 3072
-        int exception_addr = 32'h0000 >> 2; // 0
+        int unsigned base_addr;
+        int unsigned exception_addr;
+        int unsigned program_end_idx;
+        string opcodes_mem;
+        string dmem_mem;
+
+        base_addr      = FETCH_START_ADDR >> 2;
+        exception_addr = EXCEPTION_ADDR >> 2;
+
+        if ($value$plusargs("OPCODES_MEM=%s", opcodes_mem)) begin
+            $display("==================================================");
+            $display("   STARTING JSON-PROGRAM SIMULATION");
+            $display("==================================================");
+            load_imem_from_memfile(opcodes_mem, program_end_idx);
+            if ($value$plusargs("DMEM_MEM=%s", dmem_mem)) begin
+                load_dmem_from_memfile(dmem_mem);
+            end else begin
+                dmem.delete();
+                $display("[TB] No DMEM_MEM provided. Data memory defaults to zeros.");
+            end
+            resetn = 0;
+            #25;
+            resetn = 1;
+            $monitor("Time: %3t | PC: %h | Inst: %h | EX_ALU: %3d | SqshID: %b | Excep: %b",
+                     $time, u_top.fd_pc, u_top.fd_inst, $signed(u_top.ex_alu_result),
+                     u_top.cu_squash_decode, u_top.cu_exception_fetch);
+            run_until_last_fetch(program_end_idx, 10, 5000);
+            dump_all_gprs();
+            $display("==================================================");
+            $display("JSON program simulation complete.");
+            $finish;
+        end else begin
 
         $display("==================================================");
-        $display("   STARTING RISC-V FULL PIPELINE & EXCEPTION TEST");
+        $display("   STARTING DEFAULT ADVANCED-LIKE PIPELINE TEST");
         $display("==================================================");
 
         // =========================================================
@@ -121,83 +238,54 @@ module tb_top;
         // Assuming r1=100, r2=50 (Initialized in decode.sv)
         // =========================================================
         
-        // 1. ADD r3, r1, r2  --> r3 = 100 + 50 = 150
-        // CURRENT PC: 0x3000 (Index: 3072)
+        // 1. ADD r3, r1, r2  --> 150
         imem[base_addr + 0] = {R_OPCODE, 5'd1, 5'd2, 5'd3, 5'd0, ADD}; 
         
         // 2. STORE r3, 0(r0) --> DMEM[0] = 150
-        // CURRENT PC: 0x3004 (Index: 3073)
         imem[base_addr + 1] = {STORE_OPCODE, 5'd0, 5'd3, 16'h0000}; 
 
-        // 3. LOAD r4, 0(r0)  --> r4 = DMEM[0] = 150
-        // CURRENT PC: 0x3008 (Index: 3074)
+        // 3. LOAD r4, 0(r0)  --> 150
         imem[base_addr + 2] = {LOAD_OPCODE, 5'd0, 5'd4, 16'h0000}; 
 
-        // ---------------------------------------------------------
-        // 4. BEQ r1, r1, imm=4  (target = PC + imm*4 = 0x300C + 16 = 0x301C)
-        // CURRENT PC: 0x300C (Index: 3075)
-        // ---------------------------------------------------------
-        imem[base_addr + 3] = {BRANCH_OPCODE, 5'd1, 5'd1, 16'sd4}; 
+        // 4. MUL r5, r4, r3 --> 150*150 = 22500
+        imem[base_addr + 3] = {R_OPCODE, 5'd4, 5'd3, 5'd5, 5'd0, MUL};
+
+        // 5. LOAD-use hazard check: ADD r6, r4, r1 --> 250
+        imem[base_addr + 4] = {R_OPCODE, 5'd4, 5'd1, 5'd6, 5'd0, ADD};
+
+        // 6. BEQ r1, r2, +3 (not taken): fall-through must execute
+        imem[base_addr + 5] = {BRANCH_OPCODE, 5'd1, 5'd2, 16'sd3};
+
+        // 7. SUB r12, r1, r2 --> 50 (must execute)
+        imem[base_addr + 6] = {R_OPCODE, 5'd1, 5'd2, 5'd12, 5'd0, SUB};
+
+        // 8. BEQ r1, r1, +3 (taken): next 2 instructions should be squashed
+        imem[base_addr + 7] = {BRANCH_OPCODE, 5'd1, 5'd1, 16'sd3};
+
+        // 9-10. Wrong-path instructions (expected squash)
+        imem[base_addr + 8]  = {R_OPCODE, 5'd1, 5'd2, 5'd13, 5'd0, ADD};
+        imem[base_addr + 9]  = {LOAD_OPCODE, 5'd0, 5'd14, 16'h0000};
+
+        // 11. Branch landing instruction
+        imem[base_addr + 10] = {R_OPCODE, 5'd1, 5'd2, 5'd16, 5'd0, XOR};
+
+        // 12. JAL to a later slot, skip two NOPs
+        // target byte addr = 0x3040 -> target field = 26'h000C10
+        imem[base_addr + 11] = {JAL_OPCODE, 26'h000C10};
+        imem[base_addr + 12] = {NO_OPERATION, 26'b0};
+        imem[base_addr + 13] = {NO_OPERATION, 26'b0};
+
+        // 13. At 0x3040: invalid opcode to force exception to EXCEPTION_ADDR
+        imem[base_addr + 16] = {6'b111111, 26'b0};
 
         // =========================================================
-        // --- SQUASH ZONE (The "Not Taken" Path) ---
-        // The Fetch unit will grab these by default, but the 
-        // Execute stage must squash them because the branch IS taken.
+        // EXCEPTION HANDLER MEMORY (Starts at EXCEPTION_ADDR)
         // =========================================================
-        
-        // 5. ADD r5, r1, r2 --> MUST BE SQUASHED (r5 should remain 0)
-        // CURRENT PC: 0x3010 (Index: 3076)
-        imem[base_addr + 4] = {R_OPCODE, 5'd1, 5'd2, 5'd5, 5'd0, ADD}; 
+        imem[exception_addr + 0] = {R_OPCODE, 5'd1, 5'd2, 5'd17, 5'd0, SUB};
+        imem[exception_addr + 1] = {NO_OPERATION, 26'b0};
 
-        // 6. LOAD r6, 0(r0) --> MUST BE SQUASHED (r6 should remain 0)
-        // CURRENT PC: 0x3014 (Index: 3077)
-        imem[base_addr + 5] = {LOAD_OPCODE, 5'd0, 5'd6, 16'h0000}; 
-
-        // 7. SUB r7, r1, r2 --> MUST BE SQUASHED (r7 should remain 0)
-        // CURRENT PC: 0x3018 (Index: 3078)
-        imem[base_addr + 6] = {R_OPCODE, 5'd1, 5'd2, 5'd7, 5'd0, SUB}; 
-
-        // =========================================================
-        // --- BRANCH LANDING ZONE ---
-        // =========================================================
-        
-        // 8. XOR r8, r1, r2 --> r8 = 100 ^ 50
-        // CURRENT PC: 0x301C (Index: 3079) - Branch successfully lands here!
-        imem[base_addr + 7] = {R_OPCODE, 5'd1, 5'd2, 5'd8, 5'd0, XOR}; 
-
-        // 9. OR r9, r1, r2 --> r9 = 100 | 50
-        // CURRENT PC: 0x3020 (Index: 3080)
-        imem[base_addr + 8] = {R_OPCODE, 5'd1, 5'd2, 5'd9, 5'd0, OR}; 
-
-        // ---------------------------------------------------------
-        // 10. JAL -> Absolute Jump 
-        // CURRENT PC: 0x3024 (Index: 3081)
-        // EXECUTE MATH: {PC[31:28], target, 2'b00} --> {0x0, 0x000C0D, 00} = 0x003034
-        // DESTINATION: PC 0x3034 (Index: 3085 / base_addr + 13)
-        // ---------------------------------------------------------
-        imem[base_addr + 9] = {JAL_OPCODE, 26'h0000C0D}; 
-
-        // 11-13. NOPs --> Should be squashed by the JAL!
-        // CURRENT PC: 0x3028, 0x302C, 0x3030
-        imem[base_addr + 10] = {NO_OPERATION, 26'b0}; 
-        imem[base_addr + 11] = {NO_OPERATION, 26'b0}; 
-        imem[base_addr + 12] = {NO_OPERATION, 26'b0}; 
-
-        // ---------------------------------------------------------
-        // 14. INVALID INSTRUCTION
-        // CURRENT PC: 0x3034 (Index: 3085) - We landed the JAL here!
-        // EXECUTE MATH: Trigger exception, Control Unit overrides PC to 0x0000
-        // DESTINATION: PC 0x0000 (Index: 0)
-        // ---------------------------------------------------------
-        imem[base_addr + 13] = {6'b111111, 26'b0}; 
-
-        // =========================================================
-        // EXCEPTION HANDLER MEMORY (Starts at 0x0000)
-        // =========================================================
-        
-        // 0. SUB r10, r1, r2 --> r10 = 100 - 50 = 50. Confirms we landed here!
-        // CURRENT PC: 0x0000 (Index: 0)
-        imem[exception_addr + 0] = {R_OPCODE, 5'd1, 5'd2, 5'd10, 5'd0, SUB}; 
+        // Last expected fetch in default test is exception handler NOP.
+        program_end_idx = exception_addr + 1;
 
 
         // =========================================================
@@ -212,12 +300,13 @@ module tb_top;
                  $time, u_top.fd_pc, u_top.fd_inst, $signed(u_top.ex_alu_result), 
                  u_top.cu_squash_decode, u_top.cu_exception_fetch);
 
-        // Extended delay to allow all pipeline flushes and memory operations to finish
-        #800; 
+        run_until_last_fetch(program_end_idx, 10, 5000);
+        dump_all_gprs();
         
         $display("==================================================");
         $display("Test Complete.");
         $finish;
+        end
     end
 
 endmodule

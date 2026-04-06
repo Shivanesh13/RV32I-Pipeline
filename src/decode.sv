@@ -58,10 +58,7 @@ logic [REG_WIDTH-1:0] ex_rd, reg_data_0, reg_data_1;
 always_ff @(posedge clk or negedge resetn) begin : blockName
     if(!resetn) begin
             // Hardwire r0 to 0 (RISC-V standard)
-            MEM_DATA[0] <= 32'h00000000;
-            MEM_DATA[1] <= 32'd100;
-            MEM_DATA[2] <= 32'd50; 
-            for(int i = 3; i < 32; i++) begin
+            for(int i = 0; i < 32; i++) begin
                 MEM_DATA[i] <= 32'h00000000;
             end
             memory_ready_o <= 1'b0;
