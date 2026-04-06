@@ -16,6 +16,8 @@ class Program:
 class VarDecl:
     name: str
     init: Optional["Expr"]
+    array_len: Optional[int]
+    array_init: Optional[list[int]]
     line: int
 
 
@@ -32,7 +34,7 @@ class Block:
     stmts: list["Stmt"]
 
 
-Stmt = "VarDeclStmt | AssignStmt | IfStmt | WhileStmt | ReturnStmt | ExprStmt | BlockStmt"
+Stmt = "VarDeclStmt | AssignStmt | ArrayAssignStmt | IfStmt | WhileStmt | ReturnStmt | ExprStmt | BlockStmt"
 
 
 @dataclass
@@ -48,6 +50,14 @@ class VarDeclStmt:
 @dataclass
 class AssignStmt:
     name: str
+    value: "Expr"
+    line: int
+
+
+@dataclass
+class ArrayAssignStmt:
+    name: str
+    index: "Expr"
     value: "Expr"
     line: int
 
@@ -79,7 +89,7 @@ class ExprStmt:
     line: int
 
 
-Expr = "IntLiteral | Ident | BinOp | Call"
+Expr = "IntLiteral | Ident | ArrayRef | BinOp | Call"
 
 
 @dataclass
@@ -91,6 +101,13 @@ class IntLiteral:
 @dataclass
 class Ident:
     name: str
+    line: int
+
+
+@dataclass
+class ArrayRef:
+    name: str
+    index: Expr
     line: int
 
 

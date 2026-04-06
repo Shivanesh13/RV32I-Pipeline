@@ -77,21 +77,29 @@ logic [DATA_WIDTH-1:0] rs1_reg, rs2_reg;
 logic inst_valid_i_d;
 assign decode_ready_o = (reg_loopback_o == inst_i[25:21] || reg_loopback_o == inst_i[20:16]) ? execute_ready_i && !stall_i && !load_op_o : execute_ready_i && !stall_i;
 always_comb begin
-    if(reg_mem_loopback_i == inst_i[25:21]) begin
-        rs1_reg = data_mem_loopback_i;
-    end 
+     
+    if(inst_i[25:21] == 5'b00000) begin
+        rs1_reg = 32'h00000000;
+    end
     else if(reg_loopback_o == inst_i[25:21]) begin
         rs1_reg = data_loopback_o;
-    end else if(memory_addr_i == inst_i[25:21] && memory_valid_i) begin
+    end else if(reg_mem_loopback_i == inst_i[25:21]) begin
+        rs1_reg = data_mem_loopback_i;
+    end 
+    else if(memory_addr_i == inst_i[25:21] && memory_valid_i) begin
         rs1_reg = memory_data_i;
     end else begin
         rs1_reg = MEM_DATA[inst_i[25:21]];
     end
 
-    if(reg_mem_loopback_i == inst_i[20:16]) begin
-        rs2_reg = data_mem_loopback_i;
-    end else if(reg_loopback_o == inst_i[20:16]) begin
+    if(inst_i[20:16] == 5'b00000) begin
+        rs2_reg = 32'h00000000;
+    end
+    else if(reg_loopback_o == inst_i[20:16]) begin
         rs2_reg = data_loopback_o;
+    end
+    else if(reg_mem_loopback_i == inst_i[20:16]) begin
+        rs2_reg = data_mem_loopback_i;
     end else if(memory_addr_i == inst_i[20:16] && memory_valid_i) begin
         rs2_reg = memory_data_i;
     end else begin
@@ -123,6 +131,9 @@ always_ff @(posedge clk or negedge resetn) begin
             funct_o <= 6'b000000;
             rs1_o <= 32'h00000000;
             rs2_o <= 32'h00000000;
+            rd_o <= 5'b00000;
+            imm_o <= 16'h0000;
+            jump_target_o <= 26'h0000000;
         end
         else if(inst_valid_i && decode_ready_o) begin
             pc_o <= pc_i;
@@ -151,6 +162,7 @@ always_ff @(posedge clk or negedge resetn) begin
                     imm_o <= inst_i[15:0];
                     pc_valid_o <= 1'b1;
                     invalid_inst_o <= 1'b0;
+                    rd_o <= 5'b00000;
                 end
                 BRANCH_OPCODE: begin
                     opcode_o <= BRANCH_OPCODE;
@@ -159,12 +171,14 @@ always_ff @(posedge clk or negedge resetn) begin
                     imm_o <= inst_i[15:0];
                     pc_valid_o <= 1'b1;
                     invalid_inst_o <= 1'b0;
+                    rd_o <= 5'b00000;
                 end
                 JAL_OPCODE: begin
                     opcode_o <= JAL_OPCODE;
                     jump_target_o <= inst_i[25:0];
                     pc_valid_o <= 1'b1;
                     invalid_inst_o <= 1'b0;
+                    rd_o <= 5'b00000;
                 end
                 default: begin
                     opcode_o <= 6'b000000;

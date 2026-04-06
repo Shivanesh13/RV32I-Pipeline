@@ -90,13 +90,13 @@ def linear_scan_allocate(ops: list[ir.IrOp], param_vregs: list[int]) -> dict[int
         (iv for v, iv in intervals.items() if v not in alloc),
         key=lambda x: x.start,
     )
-    free = [p for p in range(PHYS_MIN, PHYS_MAX + 1) if p not in alloc.values()]
+    fixed_phys = set(alloc.values())
     active: list[tuple[int, Interval]] = []  # (phys, interval)
 
     for iv in sorted_iv:
         # expire intervals that ended before this one starts
         active = [(p, j) for p, j in active if j.end >= iv.start]
-        used_phys = {p for p, _ in active} | set(alloc.values())
+        used_phys = {p for p, _ in active} | fixed_phys
         cand = [p for p in range(PHYS_MIN, PHYS_MAX + 1) if p not in used_phys]
         if not cand:
             raise CompileError(

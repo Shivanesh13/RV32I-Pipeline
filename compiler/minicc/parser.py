@@ -47,12 +47,24 @@ class Parser:
             self._expect(TokKind.RPAREN)
             body = self._parse_block()
             return A.FuncDecl(name, params, body, line)
+        array_len = None
+        if self._peek().kind == TokKind.LBRACKET:
+            self._advance()
+            n_tok = self._expect(TokKind.NUM, "expected constant array length")
+            if (n_tok.value or 0) <= 0:
+                raise CompileError("array length must be > 0", n_tok.line, n_tok.col)
+            array_len = n_tok.value
+            self._expect(TokKind.RBRACKET, "expected ']' after array length")
         init = None
+        array_init = None
         if self._peek().kind == TokKind.EQ:
             self._advance()
-            init = self._parse_expr()
+            if array_len is not None:
+                array_init = self._parse_array_initializer()
+            else:
+                init = self._parse_expr()
         self._expect(TokKind.SEMI)
-        return A.VarDecl(name, init, line)
+        return A.VarDecl(name, init, array_len, array_init, line)
 
     def _parse_block(self) -> A.Block:
         self._expect(TokKind.LBRACE)
@@ -62,23 +74,91 @@ class Parser:
         self._expect(TokKind.RBRACE)
         return A.Block(stmts)
 
+    def _eval_const_init_expr(self, e: A.Expr) -> int:
+        if isinstance(e, A.IntLiteral):
+            return e.value
+        if isinstance(e, A.BinOp) and e.op in ("+", "-"):
+            l = self._eval_const_init_expr(e.left)
+            r = self._eval_const_init_expr(e.right)
+            return l + r if e.op == "+" else l - r
+        raise CompileError("array initializer entries must be constant integers", getattr(e, "line", self._peek().line))
+
+    def _parse_array_initializer(self) -> list[int]:
+        self._expect(TokKind.LBRACE, "expected '{' for array initializer")
+        vals: list[int] = []
+        if self._peek().kind != TokKind.RBRACE:
+            vals.append(self._eval_const_init_expr(self._parse_expr()))
+            while self._peek().kind == TokKind.COMMA:
+                self._advance()
+                if self._peek().kind == TokKind.RBRACE:
+                    break
+                vals.append(self._eval_const_init_expr(self._parse_expr()))
+        self._expect(TokKind.RBRACE, "expected '}' after array initializer")
+        return vals
+
+    def _is_assign_like_start(self) -> bool:
+        if self._peek().kind != TokKind.IDENT:
+            return False
+        j = self.i + 1
+        if j >= len(self.toks):
+            return False
+        if self.toks[j].kind == TokKind.LBRACKET:
+            depth = 1
+            j += 1
+            while j < len(self.toks) and depth > 0:
+                if self.toks[j].kind == TokKind.LBRACKET:
+                    depth += 1
+                elif self.toks[j].kind == TokKind.RBRACKET:
+                    depth -= 1
+                j += 1
+            if depth != 0 or j >= len(self.toks):
+                return False
+        if j >= len(self.toks):
+            return False
+        return self.toks[j].kind in (
+            TokKind.EQ,
+            TokKind.PLUSEQ,
+            TokKind.MINUSEQ,
+            TokKind.PLUSPLUS,
+            TokKind.MINUSMINUS,
+        )
+
     def _parse_assign_like_no_semi(self) -> A.Stmt:
         line = self._peek().line
         name = self._expect(TokKind.IDENT).lexeme
+        idx_expr = None
+        if self._peek().kind == TokKind.LBRACKET:
+            self._advance()
+            idx_expr = self._parse_expr()
+            self._expect(TokKind.RBRACKET, "expected ']' after array index")
         op = self._advance()
         if op.kind == TokKind.EQ:
+            if idx_expr is not None:
+                return A.ArrayAssignStmt(name, idx_expr, self._parse_expr(), line)
             return A.AssignStmt(name, self._parse_expr(), line)
         if op.kind == TokKind.PLUSEQ:
             rhs = self._parse_expr()
+            if idx_expr is not None:
+                lhs = A.ArrayRef(name, idx_expr, line)
+                return A.ArrayAssignStmt(name, idx_expr, A.BinOp("+", lhs, rhs, line), line)
             return A.AssignStmt(name, A.BinOp("+", A.Ident(name, line), rhs, line), line)
         if op.kind == TokKind.MINUSEQ:
             rhs = self._parse_expr()
+            if idx_expr is not None:
+                lhs = A.ArrayRef(name, idx_expr, line)
+                return A.ArrayAssignStmt(name, idx_expr, A.BinOp("-", lhs, rhs, line), line)
             return A.AssignStmt(name, A.BinOp("-", A.Ident(name, line), rhs, line), line)
         if op.kind == TokKind.PLUSPLUS:
             one = A.IntLiteral(1, line)
+            if idx_expr is not None:
+                lhs = A.ArrayRef(name, idx_expr, line)
+                return A.ArrayAssignStmt(name, idx_expr, A.BinOp("+", lhs, one, line), line)
             return A.AssignStmt(name, A.BinOp("+", A.Ident(name, line), one, line), line)
         if op.kind == TokKind.MINUSMINUS:
             one = A.IntLiteral(1, line)
+            if idx_expr is not None:
+                lhs = A.ArrayRef(name, idx_expr, line)
+                return A.ArrayAssignStmt(name, idx_expr, A.BinOp("-", lhs, one, line), line)
             return A.AssignStmt(name, A.BinOp("-", A.Ident(name, line), one, line), line)
         raise CompileError("expected assignment operator", op.line, op.col)
 
@@ -118,13 +198,7 @@ class Parser:
                 val = self._parse_expr()
             self._expect(TokKind.SEMI)
             return A.ReturnStmt(val, line)
-        if t.kind == TokKind.IDENT and self.toks[self.i + 1].kind in (
-            TokKind.EQ,
-            TokKind.PLUSEQ,
-            TokKind.MINUSEQ,
-            TokKind.PLUSPLUS,
-            TokKind.MINUSMINUS,
-        ):
+        if self._is_assign_like_start():
             st = self._parse_assign_like_no_semi()
             self._expect(TokKind.SEMI)
             return st
@@ -136,13 +210,7 @@ class Parser:
         line = self._peek().line
         if self._peek().kind == TokKind.INT:
             return A.VarDeclStmt(self._parse_local_vardecl_no_semi())
-        if self._peek().kind == TokKind.IDENT and self.toks[self.i + 1].kind in (
-            TokKind.EQ,
-            TokKind.PLUSEQ,
-            TokKind.MINUSEQ,
-            TokKind.PLUSPLUS,
-            TokKind.MINUSMINUS,
-        ):
+        if self._is_assign_like_start():
             return self._parse_assign_like_no_semi()
         return A.ExprStmt(self._parse_expr(), line)
 
@@ -181,22 +249,46 @@ class Parser:
         line = self._peek().line
         self._expect(TokKind.INT)
         name = self._expect(TokKind.IDENT).lexeme
+        array_len = None
+        if self._peek().kind == TokKind.LBRACKET:
+            self._advance()
+            n_tok = self._expect(TokKind.NUM, "expected constant array length")
+            if (n_tok.value or 0) <= 0:
+                raise CompileError("array length must be > 0", n_tok.line, n_tok.col)
+            array_len = n_tok.value
+            self._expect(TokKind.RBRACKET, "expected ']' after array length")
         init = None
+        array_init = None
         if self._peek().kind == TokKind.EQ:
             self._advance()
-            init = self._parse_expr()
+            if array_len is not None:
+                array_init = self._parse_array_initializer()
+            else:
+                init = self._parse_expr()
         self._expect(TokKind.SEMI)
-        return A.VarDecl(name, init, line)
+        return A.VarDecl(name, init, array_len, array_init, line)
 
     def _parse_local_vardecl_no_semi(self) -> A.VarDecl:
         line = self._peek().line
         self._expect(TokKind.INT)
         name = self._expect(TokKind.IDENT).lexeme
+        array_len = None
+        if self._peek().kind == TokKind.LBRACKET:
+            self._advance()
+            n_tok = self._expect(TokKind.NUM, "expected constant array length")
+            if (n_tok.value or 0) <= 0:
+                raise CompileError("array length must be > 0", n_tok.line, n_tok.col)
+            array_len = n_tok.value
+            self._expect(TokKind.RBRACKET, "expected ']' after array length")
         init = None
+        array_init = None
         if self._peek().kind == TokKind.EQ:
             self._advance()
-            init = self._parse_expr()
-        return A.VarDecl(name, init, line)
+            if array_len is not None:
+                array_init = self._parse_array_initializer()
+            else:
+                init = self._parse_expr()
+        return A.VarDecl(name, init, array_len, array_init, line)
 
     def _parse_expr(self) -> A.Expr:
         return self._parse_bitwise_or()
@@ -297,6 +389,11 @@ class Parser:
                         args.append(self._parse_expr())
                 self._expect(TokKind.RPAREN)
                 return A.Call(name, args, t.line)
+            if self._peek().kind == TokKind.LBRACKET:
+                self._advance()
+                idx = self._parse_expr()
+                self._expect(TokKind.RBRACKET, "expected ']' after array index")
+                return A.ArrayRef(name, idx, t.line)
             return A.Ident(name, t.line)
         if t.kind == TokKind.LPAREN:
             self._advance()

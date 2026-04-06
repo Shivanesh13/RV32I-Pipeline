@@ -31,7 +31,7 @@ IMEM_MEM ?= ./$(PROGRAM)_opcodes.mem
 DMEM_MEM ?= ./$(PROGRAM)_dmem.mem
 
 # Phony targets (targets that don't represent actual files)
-.PHONY: all lib compile sim sim_advanced gui clean build_program json_to_mem asm_to_dmem prepare_program sim_program run_program prep_code run_code gui_program run_code_gui gui_code
+.PHONY: all lib compile sim sim_advanced gui clean build_program json_to_mem json_to_dmem asm_to_dmem asm_to_mem prepare_program prepare_from_json prepare_from_asm prep_code prep_json prep_asm sim_program run_program run_code gui_program run_code_gui gui_code
 
 # Default target when you just type 'make'
 all: clean compile sim
@@ -87,6 +87,12 @@ json_to_mem:
 	@echo "========================================"
 	python3 ./json_to_imem.py --json "$(JSON_OPCODES)" --out "$(IMEM_MEM)"
 
+json_to_dmem:
+	@echo "========================================"
+	@echo " Converting opcode JSON to DMEM mem..."
+	@echo "========================================"
+	python3 ./json_to_dmem.py --json "$(JSON_OPCODES)" --out "$(DMEM_MEM)"
+
 asm_to_dmem:
 	@echo "========================================"
 	@echo " Converting ASM .data to DMEM mem..."
@@ -94,9 +100,31 @@ asm_to_dmem:
 	@if [ ! -f "$(ASM_OUT)" ]; then echo "Missing asm file: $(ASM_OUT)"; exit 1; fi
 	python3 ./asm_data_to_dmem.py --asm "$(ASM_OUT)" --out "$(DMEM_MEM)"
 
+asm_to_mem:
+	@echo "========================================"
+	@echo " Converting ASM to JSON/IMEM/DMEM..."
+	@echo "========================================"
+	@if [ ! -f "$(ASM_OUT)" ]; then echo "Missing asm file: $(ASM_OUT)"; exit 1; fi
+	python3 ./asm_to_mem.py --asm "$(ASM_OUT)" --imem-out "$(IMEM_MEM)" --dmem-out "$(DMEM_MEM)" --json-out "$(JSON_OPCODES)" --text-base "$(TEXT_BASE)"
+
 prepare_program: build_program json_to_mem asm_to_dmem
 	@echo "========================================"
 	@echo " Program memories are ready."
+	@echo " Generated: $(IMEM_MEM)"
+	@echo " Generated: $(DMEM_MEM)"
+	@echo "========================================"
+
+prepare_from_json: json_to_mem json_to_dmem
+	@echo "========================================"
+	@echo " JSON-only memory conversion complete."
+	@echo " Generated: $(IMEM_MEM)"
+	@echo " Generated: $(DMEM_MEM)"
+	@echo "========================================"
+
+prepare_from_asm: asm_to_mem
+	@echo "========================================"
+	@echo " ASM-only memory conversion complete."
+	@echo " Generated: $(JSON_OPCODES)"
 	@echo " Generated: $(IMEM_MEM)"
 	@echo " Generated: $(DMEM_MEM)"
 	@echo "========================================"
@@ -126,6 +154,8 @@ sim_program: compile
 # to compile RTL/testbench and run simulation with sim/foo_opcodes.mem
 run_program: sim_program
 prep_code: prepare_program
+prep_json: prepare_from_json
+prep_asm: prepare_from_asm
 run_code:
 	@if [ -n "$(file)" ]; then \
 		$(MAKE) run_program PROGRAM="$(file)"; \

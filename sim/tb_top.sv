@@ -26,6 +26,9 @@ module tb_top;
     // Simulated Memory Arrays (Associative arrays to handle sparse addresses like 0x3000 and 0x0000)
     logic [31:0] imem [int];
     logic [31:0] dmem [int]; 
+    int unsigned perf_cycles;
+    int unsigned perf_retired;
+    int unsigned perf_writebacks;
 
     // Instantiate the Top Module
     top u_top (
@@ -95,6 +98,24 @@ module tb_top;
         if (resetn && d_mem_write) begin
             dmem[d_mem_addr >> 2] = d_mem_data;
             $display("[%0t] MEM WRITE: Addr=0x%h, Data=%0d", $time, d_mem_addr, d_mem_data);
+        end
+    end
+
+    // Performance counters:
+    // - perf_cycles: cycles while out of reset
+    // - perf_retired: instructions reaching MEM->WB pipeline boundary
+    // - perf_writebacks: instructions committing a register write
+    always_ff @(posedge clk or negedge resetn) begin
+        if (!resetn) begin
+            perf_cycles     <= 0;
+            perf_retired    <= 0;
+            perf_writebacks <= 0;
+        end else begin
+            perf_cycles <= perf_cycles + 1;
+            if (u_top.mem_valid)
+                perf_retired <= perf_retired + 1;
+            if (u_top.wb_reg_write)
+                perf_writebacks <= perf_writebacks + 1;
         end
     end
 
@@ -192,6 +213,47 @@ module tb_top;
         end
     endtask
 
+    task automatic dump_nonzero_dmem();
+        int idx;
+        int count;
+        count = 0;
+        $display("==================================================");
+        $display(" Non-zero DMEM Entries");
+        $display("==================================================");
+        foreach (dmem[idx]) begin
+            if (dmem[idx] !== 32'h00000000) begin
+                $display("dmem[%0d] (addr=0x%08h) = 0x%08h (%0d)",
+                         idx, idx << 2, dmem[idx], $signed(dmem[idx]));
+                count++;
+            end
+        end
+        if (count == 0) begin
+            $display("[TB] No non-zero DMEM entries.");
+        end else begin
+            $display("[TB] Total non-zero DMEM entries: %0d", count);
+        end
+    endtask
+
+    task automatic dump_perf_metrics();
+        real cpi;
+        real ipc;
+        if (perf_retired == 0) begin
+            cpi = 0.0;
+            ipc = 0.0;
+        end else begin
+            cpi = real'(perf_cycles) / real'(perf_retired);
+            ipc = real'(perf_retired) / real'(perf_cycles);
+        end
+        $display("==================================================");
+        $display(" Performance Metrics");
+        $display("==================================================");
+        $display("cycles           : %0d", perf_cycles);
+        $display("retired_instr    : %0d", perf_retired);
+        $display("reg_write_commit : %0d", perf_writebacks);
+        $display("CPI              : %0.4f", cpi);
+        $display("IPC              : %0.4f", ipc);
+    endtask
+
     // ==========================================
     // Test Sequence
     // ==========================================
@@ -224,6 +286,8 @@ module tb_top;
                      u_top.cu_squash_decode, u_top.cu_exception_fetch);
             run_until_last_fetch(program_end_idx, 10, 5000);
             dump_all_gprs();
+            dump_nonzero_dmem();
+            dump_perf_metrics();
             $display("==================================================");
             $display("JSON program simulation complete.");
             $finish;
@@ -302,6 +366,8 @@ module tb_top;
 
         run_until_last_fetch(program_end_idx, 10, 5000);
         dump_all_gprs();
+        dump_nonzero_dmem();
+        dump_perf_metrics();
         
         $display("==================================================");
         $display("Test Complete.");

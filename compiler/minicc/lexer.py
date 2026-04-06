@@ -39,6 +39,8 @@ class TokKind(Enum):
     COMMA = auto()
     LPAREN = auto()
     RPAREN = auto()
+    LBRACKET = auto()
+    RBRACKET = auto()
     LBRACE = auto()
     RBRACE = auto()
     EOF = auto()
@@ -177,6 +179,8 @@ def tokenize(source: str) -> list[Token]:
             ",": TokKind.COMMA,
             "(": TokKind.LPAREN,
             ")": TokKind.RPAREN,
+            "[": TokKind.LBRACKET,
+            "]": TokKind.RBRACKET,
             "{": TokKind.LBRACE,
             "}": TokKind.RBRACE,
         }

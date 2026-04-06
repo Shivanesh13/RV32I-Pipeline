@@ -19,6 +19,10 @@ from minicc.regalloc import linear_scan_allocate
 class CompileContext:
     globals: dict[str, str] = field(default_factory=dict)  # name -> asm label
     global_inits: dict[str, int] = field(default_factory=dict)
+    global_array_inits: dict[str, list[int]] = field(default_factory=dict)
+    global_sizes: dict[str, int] = field(default_factory=dict)  # name -> number of words
+    global_addrs: dict[str, int] = field(default_factory=dict)  # name -> byte address
+    next_data_addr: int = 0
     pool: dict[int, str] = field(default_factory=dict)  # const -> label
     pool_next: int = 0
     label_id: int = 0
@@ -50,6 +54,9 @@ def _scan_func(f: A.FuncDecl) -> None:
         elif isinstance(s, A.VarDeclStmt):
             pass
         elif isinstance(s, A.AssignStmt):
+            _scan_expr(s.value)
+        elif isinstance(s, A.ArrayAssignStmt):
+            _scan_expr(s.index)
             _scan_expr(s.value)
         elif isinstance(s, A.IfStmt):
             _scan_expr(s.cond)
@@ -95,6 +102,8 @@ def _scan_expr(e: A.Expr) -> None:
     elif isinstance(e, A.Call):
         for a in e.args:
             _scan_expr(a)
+    elif isinstance(e, A.ArrayRef):
+        _scan_expr(e.index)
     elif isinstance(e, (A.IntLiteral, A.Ident)):
         pass
 
@@ -106,6 +115,7 @@ class FunctionGen:
         self.ops: list[ir.IrOp] = []
         self.vreg = 0
         self.locals: dict[str, int] = {}
+        self.local_arrays: dict[str, str] = {}
         self.param_v: list[int] = []
         self.main_end_label: str | None = None
 
@@ -122,6 +132,30 @@ class FunctionGen:
         v = self.new_v()
         self.locals[name] = v
         return v
+
+    def _resolve_array_key(self, name: str) -> str:
+        if name in self.local_arrays:
+            return self.local_arrays[name]
+        return name
+
+    def array_addr(self, name: str, index_expr: A.Expr, line: int) -> int:
+        key = self._resolve_array_key(name)
+        base_addr = self.ctx.global_addrs.get(key)
+        if base_addr is None:
+            raise CompileError(f"unknown array {name!r}", line)
+
+        vbase = self.new_v()
+        self.emit(ir.MoveImm(vbase, self.ctx.pool_const(base_addr), line))
+
+        vidx, _ = self.expr(index_expr)
+        vstride = self.new_v()
+        self.emit(ir.MoveImm(vstride, self.ctx.pool_const(4), line))
+        voff = self.new_v()
+        self.emit(ir.RInst("MUL", voff, vidx, vstride, line))
+
+        vaddr = self.new_v()
+        self.emit(ir.RInst("ADD", vaddr, vbase, voff, line))
+        return vaddr
 
     def lower(self) -> ir.FunctionIR:
         # params v1..vk map to vregs 1..k (reserved)
@@ -152,6 +186,22 @@ class FunctionGen:
                 self.stmt(x)
         elif isinstance(s, A.VarDeclStmt):
             d = s.decl
+            if d.array_len is not None:
+                if d.name in self.locals or d.name in self.local_arrays:
+                    raise CompileError(f"duplicate local declaration {d.name!r}", d.line)
+                gkey = f"__larr_{self.fn.name}_{d.name}_{self.ctx.fresh_label('A')}"
+                glab = f"_g_{gkey}"
+                self.ctx.globals[gkey] = glab
+                self.ctx.global_sizes[gkey] = d.array_len
+                init_vals = d.array_init or []
+                if len(init_vals) > d.array_len:
+                    raise CompileError(f"too many initializers for array {d.name!r}", d.line)
+                self.ctx.global_array_inits[gkey] = init_vals
+                self.ctx.global_inits[gkey] = init_vals[0] if init_vals else 0
+                self.ctx.global_addrs[gkey] = self.ctx.next_data_addr
+                self.ctx.next_data_addr += 4 * d.array_len
+                self.local_arrays[d.name] = gkey
+                return
             v = self.bind_local(d.name)
             if d.init is not None:
                 vr, _ = self.expr(d.init)
@@ -160,10 +210,29 @@ class FunctionGen:
                 self.emit(ir.RInst("ADD", v, 0, 0, d.line))  # zero
         elif isinstance(s, A.AssignStmt):
             v = self.locals.get(s.name)
+            if v is not None:
+                vr, _ = self.expr(s.value)
+                self.emit(ir.RInst("ADD", v, vr, 0, s.line))
+                return
+            if s.name in self.ctx.global_addrs and self.ctx.global_sizes.get(s.name, 0) == 1:
+                vr, _ = self.expr(s.value)
+                vaddr = self.new_v()
+                self.emit(ir.MoveImm(vaddr, self.ctx.pool_const(self.ctx.global_addrs[s.name]), s.line))
+                self.emit(ir.SWInst(vr, 0, vaddr, s.line))
+                return
+            if s.name in self.ctx.global_addrs and self.ctx.global_sizes.get(s.name, 0) > 1:
+                raise CompileError(f"cannot assign whole array {s.name!r}; assign an element", s.line)
+            if s.name in self.local_arrays:
+                raise CompileError(f"cannot assign whole array {s.name!r}; assign an element", s.line)
             if v is None:
                 raise CompileError(f"unknown variable {s.name!r}", s.line)
+        elif isinstance(s, A.ArrayAssignStmt):
+            key = self._resolve_array_key(s.name)
+            if key not in self.ctx.global_addrs or self.ctx.global_sizes.get(key, 0) <= 1:
+                raise CompileError(f"unknown array {s.name!r}", s.line)
+            vaddr = self.array_addr(s.name, s.index, s.line)
             vr, _ = self.expr(s.value)
-            self.emit(ir.RInst("ADD", v, vr, 0, s.line))
+            self.emit(ir.SWInst(vr, 0, vaddr, s.line))
         elif isinstance(s, A.IfStmt):
             self._if_stmt(s)
         elif isinstance(s, A.WhileStmt):
@@ -267,6 +336,14 @@ class FunctionGen:
                 self.emit(ir.MoveImm(v, gl, e.line))
                 return v, e.line
             raise CompileError(f"unknown identifier {e.name!r}", e.line)
+        if isinstance(e, A.ArrayRef):
+            key = self._resolve_array_key(e.name)
+            if key not in self.ctx.global_addrs or self.ctx.global_sizes.get(key, 0) <= 1:
+                raise CompileError(f"unknown array {e.name!r}", e.line)
+            vaddr = self.array_addr(e.name, e.index, e.line)
+            v = self.new_v()
+            self.emit(ir.LWInst(v, 0, vaddr, e.line))
+            return v, e.line
         if isinstance(e, A.BinOp):
             if e.op == "-":
                 if isinstance(e.left, A.IntLiteral) and e.left.value == 0:
@@ -375,13 +452,14 @@ def _build_data_offsets(ctx: CompileContext) -> dict[str, int]:
     data_off: dict[str, int] = {}
     off = 0
 
+    for name, lab in ctx.globals.items():
+        data_off[lab] = off
+        off += 4 * ctx.global_sizes.get(name, 1)
+
     def _pool_key(kv: tuple[int, str]) -> int:
         return int(kv[1].split("_")[-1])
 
     for _, lab in sorted(ctx.pool.items(), key=_pool_key):
-        data_off[lab] = off
-        off += 4
-    for _, lab in ctx.globals.items():
         data_off[lab] = off
         off += 4
     return data_off
@@ -402,11 +480,20 @@ def emit_asm_text(funcs: list[ir.FunctionIR], ctx: CompileContext) -> str:
     def _pool_key(kv: tuple[int, str]) -> int:
         return int(kv[1].split("_")[-1])
 
+    for name, lab in ctx.globals.items():
+        size = ctx.global_sizes.get(name, 1)
+        if size == 1:
+            init = ctx.global_inits.get(name, 0)
+            lines.append(f"{lab}: .word {init}")
+        else:
+            arr_init = ctx.global_array_inits.get(name, [])
+            first = arr_init[0] if arr_init else 0
+            lines.append(f"{lab}: .word {first}")
+            for i in range(1, size):
+                v = arr_init[i] if i < len(arr_init) else 0
+                lines.append(f"    .word {v}")
     for k, lab in sorted(ctx.pool.items(), key=_pool_key):
         lines.append(f"{lab}: .word {k}")
-    for name, lab in ctx.globals.items():
-        init = ctx.global_inits.get(name, 0)
-        lines.append(f"{lab}: .word {init}")
     lines.append("")
     lines.append(".text")
     lines.append("")
@@ -507,13 +594,31 @@ def _compile_to_ir(source: str) -> tuple[list[ir.FunctionIR], CompileContext]:
         if isinstance(d, A.VarDecl):
             lab = f"_g_{d.name}"
             ctx.globals[d.name] = lab
-            if d.init and isinstance(d.init, A.IntLiteral):
-                ctx.global_inits[d.name] = d.init.value
+            if d.array_len is not None:
+                ctx.global_sizes[d.name] = d.array_len
+                vals = d.array_init or []
+                if len(vals) > d.array_len:
+                    raise CompileError(f"too many initializers for array {d.name!r}", d.line)
+                ctx.global_array_inits[d.name] = vals
+                ctx.global_inits[d.name] = vals[0] if vals else 0
             else:
-                ctx.global_inits[d.name] = 0
+                ctx.global_sizes[d.name] = 1
+                if d.array_init:
+                    raise CompileError("scalar variable cannot use array initializer", d.line)
+                if d.init and isinstance(d.init, A.IntLiteral):
+                    ctx.global_inits[d.name] = d.init.value
+                else:
+                    ctx.global_inits[d.name] = 0
         elif isinstance(d, A.FuncDecl):
             ctx.funcs[d.name] = d
             func_list.append(d)
+
+    # Globals are laid out first in .data in declaration order.
+    off = 0
+    for name in ctx.globals.keys():
+        ctx.global_addrs[name] = off
+        off += 4 * ctx.global_sizes.get(name, 1)
+    ctx.next_data_addr = off
 
     ir_funcs: list[ir.FunctionIR] = []
     ordered_funcs = [f for f in func_list if f.name == "main"] + [

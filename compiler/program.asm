@@ -1,39 +1,40 @@
 .data
-__pool_1: .word 1
-__pool_2: .word 2
-__pool_3: .word 0
-__pool_4: .word 10
-__pool_5: .word 2147483648
+_arr_0: .word 1
+    .word 2
+    .word 3
+    .word 4
+    .word 5
+    .word 6
+    .word 7
+    .word 8
+    .word 9
+    .word 10
+__pool_1: .word 10
+__pool_2: .word 4
+__pool_3: .word 2147483648
+__pool_4: .word 1
+__pool_5: .word 40
+__pool_6: .word 8
 
 .text
-
 main:
     ADD r1, r0, r0
     ADD r2, r0, r0
-    LW r3, 0(r0)
-    ADD r1, r3, r0
-    LW r4, 4(r0)
-    ADD r2, r4, r0
-    LW r5, 8(r0)
-    ADD r6, r5, r0
-    LW r7, 8(r0)
-    ADD r8, r7, r0
-W2:
-    LW r9, 12(r0)
-    SUB r10, r8, r9
-    LW r11, 16(r0)
-    AND r12, r10, r11
-    BEQ r12, r0, X4
-    BEQ r0, r0, B3
-B3:
-    ADD r13, r6, r8
-    ADD r6, r13, r0
-    LW r14, 0(r0)
-    ADD r15, r8, r14
-    ADD r8, r15, r0
-    BEQ r0, r0, W2
-X4:
-    BEQ r0, r0, MAIN_END1
-MAIN_END1:
-    BEQ r0, r0, MAIN_END1
+    LW r3, 56(r0)
+    LW r5, 48(r0)
+    LW r7, 60(r0)
+W1:
+    SUB r4, r2, r3
+    AND r6, r4, r5
+    BEQ r6, r0, E1
+    BEQ r0, r0, B1
+B1:
+    LW r9, 0(r2)
+    LW r10, 4(r2)
+    ADD r1, r1, r9
+    ADD r1, r1, r10
+    ADD r2, r2, r7
+    BEQ r0, r0, W1
+E1:
+    BEQ r0, r0, E1
     NOP
