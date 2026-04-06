@@ -113,3 +113,27 @@ make compile_advanced
 # Clean generated simulation files
 make clean
 ```
+
+## 📊 Performance Characterization
+
+To characterize the microarchitecture's IPC ceiling, a controlled benchmark suite was run using array sum reduction (`N=40`, expected sum = `820`) across four software optimization levels.
+
+Methodology note: Data memory is modeled as single-cycle (zero latency) to isolate pipeline structural hazards from cache effects. Results represent the upper-bound IPC of the pipeline under pure hazard conditions (branch tax and load-use stalls only).
+
+| Test | Optimization | Retired Instr. | Total Cycles | IPC | Speedup |
+|---|---|---:|---:|---:|---:|
+| x1 | Unroll x1 (baseline) | 247 | 461 | 0.5358 | 1.00x |
+| x2 | Unroll x2 | 167 | 261 | 0.6398 | 1.76x |
+| x3 | Unroll x4 | 127 | 181 | 0.7017 | 2.54x |
+| x4 | Unroll x8 | 107 | 141 | 0.7589 | 3.26x |
+
+### Key Findings
+
+- **IPC paradox (LICM):** Applying Loop Invariant Code Motion caused IPC to decrease even as runtime improved. The compiler eliminated cheap ALU instructions, leaving a higher concentration of expensive memory and branch operations. The metric worsened because only the hard work remained.
+- **Physical ceiling at x8:** Test x4 issues 8 back-to-back loads before any `ADD`, saturating the load queue. The diminishing return from x4 to x8 reflects the pipeline approaching its scalar IPC limit, not a scheduling failure.
+- **Optimization-pressure bug discovery:** Aggressive unroll levels exposed two latent microarchitectural bugs that were not visible in standard directed tests.
+
+### Bugs Found Under Optimization Pressure
+
+- **WB-to-ID hazard:** Register file lacked internal bypassing. This was mostly invisible in standard tests but catastrophic at x8 unroll. Fixed by implementing WB-to-Decode forwarding.
+- **Phantom write bug:** Non-writing instructions (`STORE`, `BRANCH`) were latching stale `rd` addresses, causing the forwarding unit to inject incorrect values into the ALU. Fixed by explicitly zeroing `rd` for non-write opcodes.
