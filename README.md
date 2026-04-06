@@ -37,6 +37,29 @@ This core does not rely on compiler-inserted NOPs. It handles RAW data hazards a
 The processor is verified using a comprehensive SystemVerilog testbench (`tb_top.sv`).
 * **Sparse-Memory Simulation:** Utilizes associative arrays to simulate a massive unified instruction and data memory space without memory overhead, allowing tests to jump cleanly between standard execution (`0x3000`) and exception handling (`0x0000`).
 * **Directed Stress Testing:** Includes specific assembly sequences designed to verify forward/backward branch squashing, absolute jumps, and exception trapping cycle-by-cycle.
+* **C-like Program Validation:** You can also write C-like input programs in `compiler/<name>.c` and use the compiler flow to generate instruction/data memories, then run those programs directly on the CPU to validate end-to-end behavior.
+
+## 🛠️ Compile Flow Details
+
+The compile pipeline for file-driven testing is:
+
+1. **C source -> Assembly (`.asm`)**
+   * `minicc` compiles `compiler/<name>.c` into `compiler/<name>.asm`.
+2. **Assembly text section -> Opcode map (`.json`)**
+   * The compiler emits `compiler/<name>_opcodes.json` for instruction addresses and encoded words.
+3. **Opcode map -> IMEM file (`.mem`)**
+   * `sim/json_to_imem.py` converts opcode JSON to `sim/<name>_opcodes.mem`.
+4. **Assembly data section -> DMEM file (`.mem`)**
+   * `sim/asm_data_to_dmem.py` extracts `.data` `.word` values into `sim/<name>_dmem.mem`.
+5. **Simulation launch**
+   * `tb_top.sv` loads `+OPCODES_MEM` into IMEM and `+DMEM_MEM` into DMEM, then runs until the last instruction is fetched plus safety cycles.
+
+Use this command to run the full compile pipeline:
+
+```bash
+cd sim
+make prep_code file=<name>
+```
 
 ## 🚀 Quick Start (How to Run)
 
