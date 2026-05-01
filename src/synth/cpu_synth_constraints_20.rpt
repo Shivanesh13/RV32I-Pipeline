@@ -1,0 +1,49 @@
+ 
+****************************************
+Report : constraint
+        -all_violators
+Design : top
+Version: T-2022.03-SP4
+Date   : Fri May  1 01:23:25 2026
+****************************************
+
+
+   max_transition
+
+                             Required        Actual
+   Net                      Transition     Transition        Slack
+   -----------------------------------------------------------------
+   n8664                      0.9600         0.9916        -0.0316  (VIOLATED)
+       PIN :   U10201/A1      0.9600         0.9916        -0.0316  (VIOLATED)
+       PIN :   U10091/A1      0.9600         0.9916        -0.0316  (VIOLATED)
+       PIN :   U10059/A1      0.9600         0.9916        -0.0316  (VIOLATED)
+       PIN :   U10025/B1      0.9600         0.9916        -0.0316  (VIOLATED)
+       PIN :   U9851/A1       0.9600         0.9916        -0.0316  (VIOLATED)
+       PIN :   U9704/A1       0.9600         0.9916        -0.0316  (VIOLATED)
+       PIN :   U9497/A1       0.9600         0.9916        -0.0316  (VIOLATED)
+       PIN :   U9249/A1       0.9600         0.9916        -0.0316  (VIOLATED)
+       PIN :   U9139/C1       0.9600         0.9916        -0.0316  (VIOLATED)
+       PIN :   U8993/B1       0.9600         0.9916        -0.0316  (VIOLATED)
+       PIN :   U8840/A1       0.9600         0.9916        -0.0316  (VIOLATED)
+       PIN :   U8666/A1       0.9600         0.9916        -0.0316  (VIOLATED)
+       PIN :   U8492/A1       0.9600         0.9916        -0.0316  (VIOLATED)
+       PIN :   U8370/B2       0.9600         0.9916        -0.0316  (VIOLATED)
+       PIN :   U8326/A2       0.9600         0.9916        -0.0316  (VIOLATED)
+       PIN :   U8101/B1       0.9600         0.9916        -0.0316  (VIOLATED)
+       PIN :   U7722/A        0.9600         0.9916        -0.0316  (VIOLATED)
+       PIN :   U5518/A1       0.9600         0.9916        -0.0316  (VIOLATED)
+       PIN :   U5516/ZN       0.9600         0.9916        -0.0316  (VIOLATED)
+
+   -----------------------------------------------------------------
+   Total                      1                -0.0316  
+
+   max_area
+
+                             Required        Actual
+   Design                      Area           Area           Slack
+   -----------------------------------------------------------------
+   top                        0.0000       15087.2539     -15087.2539
+                                                                    (VIOLATED)
+
+
+1

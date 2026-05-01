@@ -1,0 +1,30 @@
+ 
+****************************************
+Report : area
+Design : top
+Version: T-2022.03-SP4
+Date   : Wed Apr 15 14:34:26 2026
+****************************************
+
+Library(s) Used:
+
+    NangateOpenCellLibrary_PDKv1_2_v2008_10_slow_nldm (File: /mnt/coe/workspace/ece/ece720-common/tech/nangate/NangateOpenCellLibrary_PDKv1_2_v2008_10/liberty/520/NangateOpenCellLibrary_PDKv1_2_v2008_10_slow_nldm.db)
+
+Number of ports:                          168
+Number of nets:                          7304
+Number of cells:                         6820
+Number of combinational cells:           5494
+Number of sequential cells:              1323
+Number of macros/black boxes:               0
+Number of buf/inv:                        528
+Number of references:                      48
+
+Combinational area:               7874.132060
+Buf/Inv area:                      314.678001
+Noncombinational area:            7391.607955
+Macro/Black Box area:                0.000000
+Net Interconnect area:      undefined  (No wire load specified)
+
+Total cell area:                 15265.740014
+Total area:                 undefined
+1

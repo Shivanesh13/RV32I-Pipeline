@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="400">
+<rect x="0" y="0" width="640" height="400" fill="white"/>
+<text x="320" y="22" text-anchor="middle" font-family="DejaVu Sans, Arial, sans-serif" font-size="14" font-weight="bold">Worst setup slack vs clock period (slow corner)</text>
+<line x1="72.0" y1="48" x2="72.0" y2="348" stroke="#e0e0e0" stroke-width="1"/>
+<line x1="207.0" y1="48" x2="207.0" y2="348" stroke="#e0e0e0" stroke-width="1"/>
+<line x1="342.0" y1="48" x2="342.0" y2="348" stroke="#e0e0e0" stroke-width="1"/>
+<line x1="477.0" y1="48" x2="477.0" y2="348" stroke="#e0e0e0" stroke-width="1"/>
+<line x1="612.0" y1="48" x2="612.0" y2="348" stroke="#e0e0e0" stroke-width="1"/>
+<line x1="72" y1="48.0" x2="612" y2="48.0" stroke="#e0e0e0" stroke-width="1"/>
+<line x1="72" y1="123.0" x2="612" y2="123.0" stroke="#e0e0e0" stroke-width="1"/>
+<line x1="72" y1="198.0" x2="612" y2="198.0" stroke="#e0e0e0" stroke-width="1"/>
+<line x1="72" y1="273.0" x2="612" y2="273.0" stroke="#e0e0e0" stroke-width="1"/>
+<line x1="72" y1="348.0" x2="612" y2="348.0" stroke="#e0e0e0" stroke-width="1"/>
+<line x1="72" y1="348" x2="612" y2="348" stroke="#333" stroke-width="1.5"/>
+<line x1="72" y1="48" x2="72" y2="348" stroke="#333" stroke-width="1.5"/>
+<text x="72.0" y="382" text-anchor="middle" font-family="DejaVu Sans, Arial, sans-serif" font-size="10" fill="#333">9.10</text>
+<text x="207.0" y="382" text-anchor="middle" font-family="DejaVu Sans, Arial, sans-serif" font-size="10" fill="#333">13.3</text>
+<text x="342.0" y="382" text-anchor="middle" font-family="DejaVu Sans, Arial, sans-serif" font-size="10" fill="#333">17.5</text>
+<text x="477.0" y="382" text-anchor="middle" font-family="DejaVu Sans, Arial, sans-serif" font-size="10" fill="#333">21.7</text>
+<text x="612.0" y="382" text-anchor="middle" font-family="DejaVu Sans, Arial, sans-serif" font-size="10" fill="#333">25.9</text>
+<text x="64" y="348.0" text-anchor="end" dominant-baseline="middle" font-family="DejaVu Sans, Arial, sans-serif" font-size="10" fill="#333">-0.280</text>
+<text x="64" y="273.0" text-anchor="end" dominant-baseline="middle" font-family="DejaVu Sans, Arial, sans-serif" font-size="10" fill="#333">0.575</text>
+<text x="64" y="198.0" text-anchor="end" dominant-baseline="middle" font-family="DejaVu Sans, Arial, sans-serif" font-size="10" fill="#333">1.43</text>
+<text x="64" y="123.0" text-anchor="end" dominant-baseline="middle" font-family="DejaVu Sans, Arial, sans-serif" font-size="10" fill="#333">2.28</text>
+<text x="64" y="48.0" text-anchor="end" dominant-baseline="middle" font-family="DejaVu Sans, Arial, sans-serif" font-size="10" fill="#333">3.14</text>
+<text x="342.0" y="396" text-anchor="middle" font-family="DejaVu Sans, Arial, sans-serif" font-size="11" fill="#333">Clock period (ns)</text>
+<text transform="rotate(-90 18.000000 200.000000)" x="18" y="200.0" text-anchor="middle" font-family="DejaVu Sans, Arial, sans-serif" font-size="11" fill="#333">Setup slack (ns)</text>
+<line x1="72" y1="323.5" x2="612" y2="323.5" stroke="#000" stroke-width="1" stroke-dasharray="4,3" opacity="0.7"/>
+<polyline fill="none" stroke="#34495e" stroke-width="2" points="100.93,325.51 133.07,327.31 165.21,323.44 197.36,309.32 261.64,319.36 422.36,291.30 583.07,68.69"/>
+<circle cx="100.93" cy="325.51" r="5" fill="#c0392b" stroke="white" stroke-width="1.2"/>
+<circle cx="133.07" cy="327.31" r="5" fill="#c0392b" stroke="white" stroke-width="1.2"/>
+<circle cx="165.21" cy="323.44" r="5" fill="#27ae60" stroke="white" stroke-width="1.2"/>
+<circle cx="197.36" cy="309.32" r="5" fill="#27ae60" stroke="white" stroke-width="1.2"/>
+<circle cx="261.64" cy="319.36" r="5" fill="#27ae60" stroke="white" stroke-width="1.2"/>
+<circle cx="422.36" cy="291.30" r="5" fill="#27ae60" stroke="white" stroke-width="1.2"/>
+<circle cx="583.07" cy="68.69" r="5" fill="#27ae60" stroke="white" stroke-width="1.2"/>
+</svg>

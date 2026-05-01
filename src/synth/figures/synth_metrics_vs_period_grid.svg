@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="640">
+<rect x="0" y="0" width="880" height="640" fill="white"/>
+<text x="440" y="26" text-anchor="middle" font-family="DejaVu Sans, Arial, sans-serif" font-size="15" font-weight="bold">RV32I pipeline (top) — synthesis vs clock period (Nangate slow corner)</text>
+<g transform="translate(0,0)"><text x="80" y="58" font-family="DejaVu Sans, Arial, sans-serif" font-size="12" font-weight="bold" fill="#222">Default SA power report</text></g>
+<polyline fill="none" stroke="#1f77b4" stroke-width="2" points="104.83,79.17 125.52,107.82 146.21,131.97 166.90,152.17 208.28,184.50 311.72,237.22 415.17,268.83"/>
+<circle cx="104.83" cy="79.17" r="4" fill="#1f77b4" stroke="white" stroke-width="1"/>
+<circle cx="125.52" cy="107.82" r="4" fill="#1f77b4" stroke="white" stroke-width="1"/>
+<circle cx="146.21" cy="131.97" r="4" fill="#1f77b4" stroke="white" stroke-width="1"/>
+<circle cx="166.90" cy="152.17" r="4" fill="#1f77b4" stroke="white" stroke-width="1"/>
+<circle cx="208.28" cy="184.50" r="4" fill="#1f77b4" stroke="white" stroke-width="1"/>
+<circle cx="311.72" cy="237.22" r="4" fill="#1f77b4" stroke="white" stroke-width="1"/>
+<circle cx="415.17" cy="268.83" r="4" fill="#1f77b4" stroke="white" stroke-width="1"/>
+<text x="260.0" y="312" text-anchor="middle" font-family="DejaVu Sans, Arial, sans-serif" font-size="10" fill="#555">Clock period (ns)</text>
+<text transform="rotate(-90 52.0 174.0)" x="52.0" y="174.0" text-anchor="middle" font-family="DejaVu Sans, Arial, sans-serif" font-size="10" fill="#555">Dynamic power (µW)</text>
+<g transform="translate(0,0)"><text x="520" y="58" font-family="DejaVu Sans, Arial, sans-serif" font-size="12" font-weight="bold" fill="#222">Cell leakage</text></g>
+<polyline fill="none" stroke="#ff7f0e" stroke-width="2" points="544.83,83.33 565.52,79.17 586.21,97.73 606.90,113.35 648.28,162.70 751.72,242.26 855.17,268.83"/>
+<circle cx="544.83" cy="83.33" r="4" fill="#ff7f0e" stroke="white" stroke-width="1"/>
+<circle cx="565.52" cy="79.17" r="4" fill="#ff7f0e" stroke="white" stroke-width="1"/>
+<circle cx="586.21" cy="97.73" r="4" fill="#ff7f0e" stroke="white" stroke-width="1"/>
+<circle cx="606.90" cy="113.35" r="4" fill="#ff7f0e" stroke="white" stroke-width="1"/>
+<circle cx="648.28" cy="162.70" r="4" fill="#ff7f0e" stroke="white" stroke-width="1"/>
+<circle cx="751.72" cy="242.26" r="4" fill="#ff7f0e" stroke="white" stroke-width="1"/>
+<circle cx="855.17" cy="268.83" r="4" fill="#ff7f0e" stroke="white" stroke-width="1"/>
+<text x="700.0" y="312" text-anchor="middle" font-family="DejaVu Sans, Arial, sans-serif" font-size="10" fill="#555">Clock period (ns)</text>
+<text transform="rotate(-90 492.0 174.0)" x="492.0" y="174.0" text-anchor="middle" font-family="DejaVu Sans, Arial, sans-serif" font-size="10" fill="#555">Leakage (µW)</text>
+<g transform="translate(0,0)"><text x="80" y="368" font-family="DejaVu Sans, Arial, sans-serif" font-size="12" font-weight="bold" fill="#222">Total instances</text></g>
+<polyline fill="none" stroke="#2ca02c" stroke-width="2" points="104.83,552.17 125.52,549.60 146.21,567.10 166.90,578.83 208.28,536.91 311.72,389.17 415.17,414.71"/>
+<circle cx="104.83" cy="552.17" r="4" fill="#2ca02c" stroke="white" stroke-width="1"/>
+<circle cx="125.52" cy="549.60" r="4" fill="#2ca02c" stroke="white" stroke-width="1"/>
+<circle cx="146.21" cy="567.10" r="4" fill="#2ca02c" stroke="white" stroke-width="1"/>
+<circle cx="166.90" cy="578.83" r="4" fill="#2ca02c" stroke="white" stroke-width="1"/>
+<circle cx="208.28" cy="536.91" r="4" fill="#2ca02c" stroke="white" stroke-width="1"/>
+<circle cx="311.72" cy="389.17" r="4" fill="#2ca02c" stroke="white" stroke-width="1"/>
+<circle cx="415.17" cy="414.71" r="4" fill="#2ca02c" stroke="white" stroke-width="1"/>
+<text x="260.0" y="622" text-anchor="middle" font-family="DejaVu Sans, Arial, sans-serif" font-size="10" fill="#555">Clock period (ns)</text>
+<text transform="rotate(-90 52.0 484.0)" x="52.0" y="484.0" text-anchor="middle" font-family="DejaVu Sans, Arial, sans-serif" font-size="10" fill="#555">Cell count</text>
+<g transform="translate(0,0)"><text x="520" y="368" font-family="DejaVu Sans, Arial, sans-serif" font-size="12" font-weight="bold" fill="#222">Total cell area</text></g>
+<polyline fill="none" stroke="#d62728" stroke-width="2" points="544.83,398.02 565.52,389.17 586.21,425.52 606.90,456.79 648.28,484.28 751.72,551.90 855.17,578.83"/>
+<circle cx="544.83" cy="398.02" r="4" fill="#d62728" stroke="white" stroke-width="1"/>
+<circle cx="565.52" cy="389.17" r="4" fill="#d62728" stroke="white" stroke-width="1"/>
+<circle cx="586.21" cy="425.52" r="4" fill="#d62728" stroke="white" stroke-width="1"/>
+<circle cx="606.90" cy="456.79" r="4" fill="#d62728" stroke="white" stroke-width="1"/>
+<circle cx="648.28" cy="484.28" r="4" fill="#d62728" stroke="white" stroke-width="1"/>
+<circle cx="751.72" cy="551.90" r="4" fill="#d62728" stroke="white" stroke-width="1"/>
+<circle cx="855.17" cy="578.83" r="4" fill="#d62728" stroke="white" stroke-width="1"/>
+<text x="700.0" y="622" text-anchor="middle" font-family="DejaVu Sans, Arial, sans-serif" font-size="10" fill="#555">Clock period (ns)</text>
+<text transform="rotate(-90 492.0 484.0)" x="492.0" y="484.0" text-anchor="middle" font-family="DejaVu Sans, Arial, sans-serif" font-size="10" fill="#555">Area (µm²)</text>
+</svg>

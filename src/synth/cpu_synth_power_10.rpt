@@ -1,0 +1,57 @@
+Information: Propagating switching activity (low effort zero delay simulation). (PWR-6)
+Warning: Design has unannotated primary inputs. (PWR-414)
+Warning: Design has unannotated sequential cell outputs. (PWR-415)
+ 
+****************************************
+Report : power
+        -analysis_effort low
+Design : top
+Version: T-2022.03-SP4
+Date   : Fri May  1 01:16:33 2026
+****************************************
+
+
+Library(s) Used:
+
+    NangateOpenCellLibrary_PDKv1_2_v2008_10_slow_nldm (File: /mnt/coe/workspace/ece/ece720-common/tech/nangate/NangateOpenCellLibrary_PDKv1_2_v2008_10/liberty/520/NangateOpenCellLibrary_PDKv1_2_v2008_10_slow_nldm.db)
+
+
+Operating Conditions: slow   Library: NangateOpenCellLibrary_PDKv1_2_v2008_10_slow_nldm
+Wire Load Model Mode: top
+
+
+Global Operating Voltage = 0.95 
+Power-specific unit information :
+    Voltage Units = 1V
+    Capacitance Units = 1.000000pf
+    Time Units = 1ns
+    Dynamic Power Units = 1mW    (derived from V,C,T units)
+    Leakage Power Units = 1pW
+
+
+Attributes
+----------
+i - Including register clock pin internal power
+
+
+  Cell Internal Power  = 803.2422 uW   (96%)
+  Net Switching Power  =  29.5619 uW    (4%)
+                         ---------
+Total Dynamic Power    = 832.8041 uW  (100%)
+
+Cell Leakage Power     =  54.2503 uW
+
+
+                 Internal         Switching           Leakage            Total
+Power Group      Power            Power               Power              Power   (   %    )  Attrs
+--------------------------------------------------------------------------------------------------
+io_pad             0.0000            0.0000            0.0000            0.0000  (   0.00%)
+memory             0.0000            0.0000            0.0000            0.0000  (   0.00%)
+black_box          0.0000            0.0000            0.0000            0.0000  (   0.00%)
+clock_network      0.7915            0.0000            0.0000            0.7915  (  89.22%)  i
+register       4.2515e-03        1.1659e-03        1.9309e+07        2.4726e-02  (   2.79%)
+sequential         0.0000            0.0000            0.0000            0.0000  (   0.00%)
+combinational  7.5431e-03        2.8396e-02        3.4942e+07        7.0881e-02  (   7.99%)
+--------------------------------------------------------------------------------------------------
+Total              0.8032 mW     2.9562e-02 mW     5.4250e+07 pW         0.8871 mW
+1

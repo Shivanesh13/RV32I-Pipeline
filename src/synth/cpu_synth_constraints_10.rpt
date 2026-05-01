@@ -1,0 +1,29 @@
+ 
+****************************************
+Report : constraint
+        -all_violators
+Design : top
+Version: T-2022.03-SP4
+Date   : Fri May  1 01:16:33 2026
+****************************************
+
+
+   max_delay/setup ('clk' group)
+
+                             Required        Actual
+   Endpoint                 Path Delay     Path Delay        Slack
+   -----------------------------------------------------------------
+   u_fetch/pc_reg_reg[30]/D   9.5149         9.5383 r      -0.0234  (VIOLATED)
+   u_fetch/pc_reg_reg[29]/D   9.5205         9.5258 f      -0.0053  (VIOLATED)
+
+
+   max_area
+
+                             Required        Actual
+   Design                      Area           Area           Slack
+   -----------------------------------------------------------------
+   top                        0.0000       15304.5762     -15304.5762
+                                                                    (VIOLATED)
+
+
+1

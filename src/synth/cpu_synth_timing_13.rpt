@@ -1,0 +1,91 @@
+ 
+****************************************
+Report : timing
+        -path full
+        -delay max
+        -max_paths 1
+Design : top
+Version: T-2022.03-SP4
+Date   : Fri May  1 01:19:31 2026
+****************************************
+
+ # A fanout number of 1000 was used for high fanout net computations.
+
+Operating Conditions: slow   Library: NangateOpenCellLibrary_PDKv1_2_v2008_10_slow_nldm
+Wire Load Model Mode: top
+
+  Startpoint: u_decode/rs2_o_reg[11]
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: u_fetch/pc_reg_reg[31]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock clk (rise edge)                  0.0000     0.0000
+  clock network delay (ideal)            0.0000     0.0000
+  u_decode/rs2_o_reg[11]/CK (DFFR_X1)    0.0000 #   0.0000 r
+  u_decode/rs2_o_reg[11]/Q (DFFR_X1)     1.0183     1.0183 r
+  U5045/ZN (XNOR2_X1)                    0.5142     1.5326 r
+  U5049/ZN (NAND4_X1)                    0.1342     1.6667 f
+  U5050/ZN (NOR2_X1)                     0.2374     1.9041 r
+  U4808/ZN (AND4_X1)                     0.2563     2.1603 r
+  U5089/ZN (NOR2_X1)                     0.0955     2.2558 f
+  U4680/ZN (NAND2_X2)                    0.2123     2.4681 r
+  U4842/ZN (OR2_X1)                      0.5237     2.9918 r
+  U5093/ZN (XNOR2_X1)                    0.3640     3.3557 r
+  U4811/ZN (AND3_X1)                     0.2057     3.5614 r
+  U5098/ZN (NAND3_X1)                    0.1031     3.6645 f
+  U5107/ZN (NAND2_X1)                    0.1256     3.7901 r
+  U5111/ZN (NAND2_X1)                    0.0848     3.8749 f
+  U4679/ZN (AND2_X2)                     0.2138     4.0887 f
+  U5114/ZN (NAND2_X1)                    0.2645     4.3532 r
+  U4638/Z (BUF_X4)                       0.3527     4.7059 r
+  U5138/ZN (OAI22_X1)                    0.1616     4.8675 f
+  U5140/ZN (NOR2_X1)                     0.2578     5.1253 r
+  U5151/ZN (OAI21_X1)                    0.1164     5.2417 f
+  U5152/ZN (AOI21_X1)                    0.3710     5.6128 r
+  U5153/ZN (OAI21_X1)                    0.1809     5.7936 f
+  U5191/ZN (NAND2_X1)                    0.1302     5.9238 r
+  U5196/ZN (AND2_X1)                     0.2115     6.1353 r
+  U5200/ZN (OAI21_X1)                    0.1143     6.2496 f
+  U5202/ZN (AOI21_X1)                    0.2894     6.5390 r
+  U5205/ZN (OAI21_X1)                    0.1746     6.7136 f
+  U5208/ZN (AOI21_X1)                    0.3031     7.0167 r
+  U5211/ZN (OAI21_X1)                    0.1746     7.1914 f
+  U5214/ZN (AOI21_X1)                    0.3016     7.4930 r
+  U5217/ZN (OR2_X1)                      0.2106     7.7035 r
+  U5218/ZN (NAND2_X1)                    0.0766     7.7802 f
+  U5221/ZN (NAND2_X1)                    0.1070     7.8872 r
+  U5223/ZN (NAND2_X1)                    0.1068     7.9940 f
+  U5777/CO (FA_X1)                       0.4718     8.4658 f
+  U4990/ZN (INV_X1)                      0.1170     8.5829 r
+  U5227/ZN (OAI21_X1)                    0.0991     8.6820 f
+  U5780/CO (FA_X1)                       0.4856     9.1676 f
+  U5231/ZN (AOI22_X1)                    0.2742     9.4418 r
+  U4627/ZN (INV_X1)                      0.1322     9.5740 f
+  U5783/CO (FA_X1)                       0.4849    10.0588 f
+  U5235/ZN (AOI22_X1)                    0.2742    10.3330 r
+  U4757/ZN (INV_X1)                      0.1322    10.4652 f
+  U9850/CO (FA_X1)                       0.4694    10.9346 f
+  U5236/Z (XOR2_X1)                      0.3861    11.3208 f
+  U4628/ZN (AOI222_X1)                   0.9252    12.2460 r
+  U5031/ZN (INV_X1)                      0.1048    12.3508 f
+  u_fetch/pc_reg_reg[31]/D (DFFR_X2)     0.0000    12.3508 f
+  data arrival time                                12.3508
+
+  clock clk (rise edge)                 13.0000    13.0000
+  clock network delay (ideal)            0.0000    13.0000
+  clock uncertainty                     -0.0500    12.9500
+  u_fetch/pc_reg_reg[31]/CK (DFFR_X2)    0.0000    12.9500 r
+  library setup time                    -0.4381    12.5119
+  data required time                               12.5119
+  -----------------------------------------------------------
+  data required time                               12.5119
+  data arrival time                               -12.3508
+  -----------------------------------------------------------
+  slack (MET)                                       0.1611
+
+
+1

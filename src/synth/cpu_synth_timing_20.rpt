@@ -1,0 +1,91 @@
+ 
+****************************************
+Report : timing
+        -path full
+        -delay max
+        -max_paths 1
+Design : top
+Version: T-2022.03-SP4
+Date   : Fri May  1 01:23:24 2026
+****************************************
+
+ # A fanout number of 1000 was used for high fanout net computations.
+
+Operating Conditions: slow   Library: NangateOpenCellLibrary_PDKv1_2_v2008_10_slow_nldm
+Wire Load Model Mode: top
+
+  Startpoint: u_decode/rs1_o_reg[2]
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: u_decode/rs2_o_reg[31]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock clk (rise edge)                  0.0000     0.0000
+  clock network delay (ideal)            0.0000     0.0000
+  u_decode/rs1_o_reg[2]/CK (DFFR_X1)     0.0000 #   0.0000 r
+  u_decode/rs1_o_reg[2]/Q (DFFR_X1)      0.7188     0.7188 f
+  U7789/ZN (XNOR2_X1)                    0.4040     1.1228 r
+  U4903/ZN (INV_X1)                      0.1134     1.2362 f
+  U7794/ZN (NAND2_X1)                    0.4570     1.6932 r
+  U7795/ZN (INV_X1)                      0.1325     1.8257 f
+  U4756/ZN (INV_X1)                      0.4860     2.3117 r
+  U7810/ZN (NOR2_X1)                     0.1157     2.4274 f
+  U7811/ZN (NOR2_X1)                     0.2278     2.6552 r
+  U7814/ZN (AND3_X1)                     0.2432     2.8984 r
+  U7815/ZN (AOI21_X1)                    0.1253     3.0238 f
+  U7816/ZN (XNOR2_X1)                    0.3290     3.3528 f
+  U7817/ZN (NOR2_X1)                     0.2070     3.5598 r
+  U10799/ZN (AOI21_X1)                   0.1667     3.7266 f
+  intadd_1/U25/CO (FA_X1)                0.6257     4.3523 f
+  intadd_1/U24/CO (FA_X1)                0.5172     4.8696 f
+  intadd_1/U23/CO (FA_X1)                0.5172     5.3868 f
+  intadd_1/U22/CO (FA_X1)                0.5172     5.9040 f
+  intadd_1/U21/CO (FA_X1)                0.5172     6.4213 f
+  intadd_1/U20/CO (FA_X1)                0.5172     6.9385 f
+  intadd_1/U19/CO (FA_X1)                0.5172     7.4558 f
+  intadd_1/U18/CO (FA_X1)                0.5172     7.9730 f
+  intadd_1/U17/CO (FA_X1)                0.5172     8.4903 f
+  intadd_1/U16/CO (FA_X1)                0.5172     9.0075 f
+  intadd_1/U15/CO (FA_X1)                0.5172     9.5247 f
+  intadd_1/U14/CO (FA_X1)                0.5172    10.0420 f
+  intadd_1/U13/CO (FA_X1)                0.5172    10.5592 f
+  intadd_1/U12/CO (FA_X1)                0.5172    11.0765 f
+  intadd_1/U11/CO (FA_X1)                0.5172    11.5937 f
+  intadd_1/U10/CO (FA_X1)                0.5172    12.1110 f
+  intadd_1/U9/CO (FA_X1)                 0.5172    12.6282 f
+  intadd_1/U8/CO (FA_X1)                 0.5172    13.1455 f
+  intadd_1/U7/CO (FA_X1)                 0.5172    13.6627 f
+  intadd_1/U6/CO (FA_X1)                 0.5172    14.1799 f
+  intadd_1/U5/CO (FA_X1)                 0.5172    14.6972 f
+  intadd_1/U4/CO (FA_X1)                 0.5172    15.2144 f
+  intadd_1/U3/CO (FA_X1)                 0.5172    15.7317 f
+  intadd_1/U2/S (FA_X1)                  0.8307    16.5623 r
+  U8221/ZN (OAI21_X1)                    0.1291    16.6915 f
+  U8222/ZN (OAI21_X1)                    0.2642    16.9557 r
+  U8249/ZN (XNOR2_X1)                    0.3591    17.3149 r
+  U8250/Z (XOR2_X1)                      0.4590    17.7739 r
+  U8287/ZN (XNOR2_X1)                    0.3683    18.1423 r
+  U8307/ZN (XNOR2_X1)                    0.3362    18.4784 r
+  U8318/ZN (OAI21_X1)                    0.1426    18.6211 f
+  U8346/ZN (AOI211_X1)                   0.2969    18.9179 r
+  U8347/ZN (OAI22_X1)                    0.1983    19.1162 f
+  u_decode/rs2_o_reg[31]/D (DFFR_X1)     0.0000    19.1162 f
+  data arrival time                                19.1162
+
+  clock clk (rise edge)                 20.0000    20.0000
+  clock network delay (ideal)            0.0000    20.0000
+  clock uncertainty                     -0.0500    19.9500
+  u_decode/rs2_o_reg[31]/CK (DFFR_X1)    0.0000    19.9500 r
+  library setup time                    -0.4672    19.4828
+  data required time                               19.4828
+  -----------------------------------------------------------
+  data required time                               19.4828
+  data arrival time                               -19.1162
+  -----------------------------------------------------------
+  slack (MET)                                       0.3665
+
+
+1

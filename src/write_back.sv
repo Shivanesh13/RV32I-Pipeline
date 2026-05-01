@@ -1,7 +1,9 @@
-`include "defines.svh"
-import defines::*;
+//`include "defines.svh"
 
-module write_back(
+module write_back
+  import defines::*;
+  (
+
     input logic clk,
     input logic resetn,
 

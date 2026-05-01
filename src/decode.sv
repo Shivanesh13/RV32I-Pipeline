@@ -1,6 +1,7 @@
-`include "defines.svh"
-import defines::*;
-module decode(
+//`include "defines.svh"
+module decode
+  import defines::*;
+    (
     input logic clk,
     input logic resetn,
 

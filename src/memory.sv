@@ -1,7 +1,8 @@
-`include "defines.svh"
-import defines::*;
+//`include "defines.svh"
 
-module memory(
+module memory
+import defines::*;
+    (
     input logic clk,
     input logic resetn,
 

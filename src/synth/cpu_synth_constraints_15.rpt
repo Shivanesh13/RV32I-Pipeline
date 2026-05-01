@@ -1,0 +1,20 @@
+ 
+****************************************
+Report : constraint
+        -all_violators
+Design : top
+Version: T-2022.03-SP4
+Date   : Fri May  1 01:21:07 2026
+****************************************
+
+
+   max_area
+
+                             Required        Actual
+   Design                      Area           Area           Slack
+   -----------------------------------------------------------------
+   top                        0.0000       15182.7480     -15182.7480
+                                                                    (VIOLATED)
+
+
+1

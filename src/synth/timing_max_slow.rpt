@@ -1,0 +1,99 @@
+Information: Updating design information... (UID-85)
+Warning: Design 'top' contains 1 high-fanout nets. A fanout number of 1000 will be used for delay calculations involving these nets. (TIM-134)
+ 
+****************************************
+Report : timing
+        -path full
+        -delay max
+        -max_paths 1
+Design : top
+Version: T-2022.03-SP4
+Date   : Fri May  1 01:42:53 2026
+****************************************
+
+ # A fanout number of 1000 was used for high fanout net computations.
+
+Operating Conditions: slow   Library: NangateOpenCellLibrary_PDKv1_2_v2008_10_slow_nldm
+Wire Load Model Mode: top
+
+  Startpoint: u_decode/rs1_o_reg[2]
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: u_fetch/pc_reg_reg[31]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock clk (rise edge)                  0.0000     0.0000
+  clock network delay (ideal)            0.0000     0.0000
+  u_decode/rs1_o_reg[2]/CK (DFFR_X1)     0.0000 #   0.0000 r
+  u_decode/rs1_o_reg[2]/Q (DFFR_X1)      0.5185     0.5185 r
+  U4663/Z (BUF_X2)                       0.4844     1.0030 r
+  U4981/ZN (XNOR2_X1)                    0.4105     1.4135 r
+  U4982/ZN (NAND2_X1)                    0.1192     1.5327 f
+  U4983/ZN (NOR3_X1)                     0.3611     1.8938 r
+  U4684/ZN (AND4_X1)                     0.2240     2.1179 r
+  U5024/ZN (NAND3_X1)                    0.0894     2.2072 f
+  U5028/ZN (NAND2_X1)                    0.1400     2.3473 r
+  U4691/ZN (OR2_X1)                      0.4284     2.7757 r
+  U4671/ZN (OR2_X1)                      0.4810     3.2566 r
+  U5053/ZN (OAI22_X1)                    0.2180     3.4746 f
+  U5054/ZN (NOR2_X1)                     0.2272     3.7018 r
+  U4681/ZN (AND3_X1)                     0.2234     3.9252 r
+  U5057/ZN (NAND4_X1)                    0.1247     4.0499 f
+  U5058/ZN (NAND2_X1)                    0.1704     4.2202 r
+  U5061/ZN (NAND2_X1)                    0.0847     4.3050 f
+  U4689/ZN (AND2_X1)                     0.1977     4.5027 f
+  U4683/ZN (AND2_X1)                     0.1839     4.6866 f
+  U4834/ZN (NAND2_X2)                    0.5191     5.2057 r
+  U5083/ZN (OAI22_X1)                    0.2594     5.4651 f
+  U4688/ZN (AND2_X1)                     0.3054     5.7705 f
+  DP_OP_146J1_122_8846/U30/CO (FA_X1)    0.4858     6.2563 f
+  DP_OP_146J1_122_8846/U29/CO (FA_X1)    0.5172     6.7735 f
+  DP_OP_146J1_122_8846/U28/CO (FA_X1)    0.5172     7.2908 f
+  DP_OP_146J1_122_8846/U27/CO (FA_X1)    0.5172     7.8080 f
+  DP_OP_146J1_122_8846/U26/CO (FA_X1)    0.5172     8.3253 f
+  DP_OP_146J1_122_8846/U25/CO (FA_X1)    0.5172     8.8425 f
+  DP_OP_146J1_122_8846/U24/CO (FA_X1)    0.5172     9.3597 f
+  DP_OP_146J1_122_8846/U23/CO (FA_X1)    0.5172     9.8770 f
+  DP_OP_146J1_122_8846/U22/CO (FA_X1)    0.5172    10.3942 f
+  DP_OP_146J1_122_8846/U21/CO (FA_X1)    0.5172    10.9115 f
+  DP_OP_146J1_122_8846/U20/CO (FA_X1)    0.5172    11.4287 f
+  DP_OP_146J1_122_8846/U19/CO (FA_X1)    0.5172    11.9460 f
+  DP_OP_146J1_122_8846/U18/CO (FA_X1)    0.5172    12.4632 f
+  DP_OP_146J1_122_8846/U17/CO (FA_X1)    0.5172    12.9804 f
+  DP_OP_146J1_122_8846/U16/CO (FA_X1)    0.5172    13.4977 f
+  DP_OP_146J1_122_8846/U15/CO (FA_X1)    0.5172    14.0149 f
+  DP_OP_146J1_122_8846/U14/CO (FA_X1)    0.5172    14.5322 f
+  DP_OP_146J1_122_8846/U13/CO (FA_X1)    0.5172    15.0494 f
+  DP_OP_146J1_122_8846/U12/CO (FA_X1)    0.5172    15.5667 f
+  DP_OP_146J1_122_8846/U11/CO (FA_X1)    0.5172    16.0839 f
+  DP_OP_146J1_122_8846/U10/CO (FA_X1)    0.5172    16.6011 f
+  DP_OP_146J1_122_8846/U9/CO (FA_X1)     0.5172    17.1184 f
+  DP_OP_146J1_122_8846/U8/CO (FA_X1)     0.5172    17.6356 f
+  DP_OP_146J1_122_8846/U7/CO (FA_X1)     0.5172    18.1529 f
+  DP_OP_146J1_122_8846/U6/CO (FA_X1)     0.5172    18.6701 f
+  DP_OP_146J1_122_8846/U5/CO (FA_X1)     0.5172    19.1874 f
+  DP_OP_146J1_122_8846/U4/CO (FA_X1)     0.5172    19.7046 f
+  DP_OP_146J1_122_8846/U3/CO (FA_X1)     0.4882    20.1928 f
+  U7326/Z (XOR2_X1)                      0.3862    20.5790 f
+  U4747/ZN (AOI222_X1)                   0.9251    21.5041 r
+  U4890/ZN (INV_X1)                      0.1048    21.6089 f
+  u_fetch/pc_reg_reg[31]/D (DFFR_X2)     0.0000    21.6089 f
+  data arrival time                                21.6089
+
+  clock clk (rise edge)                 25.0000    25.0000
+  clock network delay (ideal)            0.0000    25.0000
+  clock uncertainty                     -0.0500    24.9500
+  u_fetch/pc_reg_reg[31]/CK (DFFR_X2)    0.0000    24.9500 r
+  library setup time                    -0.4381    24.5119
+  data required time                               24.5119
+  -----------------------------------------------------------
+  data required time                               24.5119
+  data arrival time                               -21.6089
+  -----------------------------------------------------------
+  slack (MET)                                       2.9030
+
+
+1
