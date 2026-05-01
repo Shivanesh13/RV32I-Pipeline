@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timing & Power Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .chart-container { position: relative; height: 300px; width: 100%; }
+        .hover-card { transition: all 0.3s ease; }
+    </style>
+</head>
+<body class="bg-slate-900 text-white p-8">
+
+    <div class="max-w-6xl mx-auto">
+        <header class="mb-8 border-b border-slate-700 pb-4">
+            <h1 class="text-3xl font-bold text-blue-400">Design Timing Analysis</h1>
+            <p class="text-slate-400">Hover over any data point to inspect metrics</p>
+        </header>
+
+        <div id="focus-area" class="bg-slate-800 rounded-xl p-8 mb-8 border border-blue-500/30 shadow-2xl hover-card">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center text-center">
+                <div>
+                    <p class="text-slate-400 uppercase text-xs tracking-widest">Frequency</p>
+                    <div id="big-freq" class="text-7xl font-black text-white">--</div>
+                    <p class="text-blue-400 font-mono">MHz</p>
+                </div>
+                <div class="border-x border-slate-700 px-4">
+                    <p class="text-slate-400 uppercase text-xs tracking-widest">Timing Status</p>
+                    <div id="big-status" class="text-5xl font-bold mt-2">SELECT POINT</div>
+                </div>
+                <div>
+                    <p class="text-slate-400 uppercase text-xs tracking-widest">Worst Slack</p>
+                    <div id="big-slack" class="text-7xl font-black text-white">--</div>
+                    <p class="text-slate-400 font-mono">ns</p>
+                </div>
+            </div>
+            <div id="detail-row" class="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4 text-center opacity-50">
+                <div><p class="text-xs text-slate-500">Period</p><p id="det-period" class="text-xl">--</p></div>
+                <div><p class="text-xs text-slate-500">Area</p><p id="det-area" class="text-xl">--</p></div>
+                <div><p class="text-xs text-slate-500">Dynamic</p><p id="det-dyn" class="text-xl">--</p></div>
+                <div><p class="text-xs text-slate-500">Leakage</p><p id="det-leak" class="text-xl">--</p></div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
+                <h3 class="text-sm font-semibold mb-4 text-slate-400">Timing Slack (ns)</h3>
+                <div class="chart-container"><canvas id="slackChart"></canvas></div>
+            </div>
+            <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
+                <h3 class="text-sm font-semibold mb-4 text-slate-400">Dynamic Power (µW)</h3>
+                <div class="chart-container"><canvas id="powerChart"></canvas></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const rawData = [
+            { f: 10, t: 100, slack: -0.0234, status: "Violated", area: 15304.58, dyn: 832.8, leak: 54.25, color: '#ef4444' },
+            { f: 11, t: 90.9, slack: -0.0439, status: "Violated", area: 15317.08, dyn: 757.25, leak: 54.35, color: '#ef4444' },
+            { f: 12, t: 83.3, slack: 0.0002, status: "Met (Marginal)", area: 15265.74, dyn: 693.54, leak: 53.9, color: '#f59e0b' },
+            { f: 13, t: 76.9, slack: 0.1611, status: "Met", area: 15221.58, dyn: 640.25, leak: 53.53, color: '#10b981' },
+            { f: 15, t: 66.7, slack: 0.0467, status: "Met", area: 15182.75, dyn: 554.97, leak: 52.34, color: '#10b981' },
+            { f: 20, t: 50.0, slack: 0.3665, status: "Met", area: 15087.25, dyn: 415.93, leak: 50.42, color: '#10b981' }
+        ];
+
+        function updateDisplay(index) {
+            const d = rawData[index];
+            document.getElementById('big-freq').innerText = d.f;
+            document.getElementById('big-slack').innerText = d.slack;
+            const statusEl = document.getElementById('big-status');
+            statusEl.innerText = d.status.toUpperCase();
+            statusEl.style.color = d.color;
+            
+            document.getElementById('det-period').innerText = d.t + " ns";
+            document.getElementById('det-area').innerText = d.area + " µm²";
+            document.getElementById('det-dyn').innerText = d.dyn + " µW";
+            document.getElementById('det-leak').innerText = d.leak + " µW";
+            document.getElementById('detail-row').classList.remove('opacity-50');
+        }
+
+        const commonOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            onHover: (event, chartElement) => {
+                if (chartElement.length > 0) {
+                    updateDisplay(chartElement[0].index);
+                }
+            },
+            plugins: { legend: { display: false } },
+            scales: {
+                x: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } },
+                y: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } }
+            }
+        };
+
+        // Slack Chart
+        new Chart(document.getElementById('slackChart'), {
+            type: 'line',
+            data: {
+                labels: rawData.map(d => d.f),
+                datasets: [{
+                    data: rawData.map(d => d.slack),
+                    borderColor: '#6366f1',
+                    pointBackgroundColor: rawData.map(d => d.color),
+                    pointRadius: 6,
+                    tension: 0.3
+                }]
+            },
+            options: commonOptions
+        });
+
+        // Power Chart
+        new Chart(document.getElementById('powerChart'), {
+            type: 'bar',
+            data: {
+                labels: rawData.map(d => d.f),
+                datasets: [{
+                    data: rawData.map(d => d.dyn),
+                    backgroundColor: '#3b82f6',
+                    borderRadius: 4
+                }]
+            },
+            options: commonOptions
+        });
+    </script>
+</body>
+</html>
